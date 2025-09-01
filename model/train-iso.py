@@ -7,21 +7,31 @@ from pyspark.sql.functions import col
 from sklearn.ensemble import IsolationForest
 from sklearn.metrics import classification_report, confusion_matrix
 
+# ========================
 # Configuration
+# ========================
 BASE_DIR = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/data/processed/cicids2017_features"
-MODEL_PATH = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/model_output/isolation_forest.pkl"
-USE_SAMPLE = True  # Set to False if you want to use full data (may crash with large sets)
-SAMPLE_FRACTION = 0.2  # 20% of data to avoid Spark memory crash
+MODEL_PATH = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/model_output/isolation_forest_tuned.pkl"
+USE_SAMPLE = True       # Avoid OOM, set to False for full data
+SAMPLE_FRACTION = 0.2   # 20% sample (tune as needed)
 
+# ========================
+# Spark Init
+# ========================
 def init_spark():
-    return SparkSession.builder \
-        .appName("IsolationForestAnomalyDetection") \
-        .master("local[*]") \
-        .config("spark.driver.memory", "8g") \
-        .config("spark.driver.maxResultSize", "4g") \
-        .config("spark.sql.execution.arrow.pyspark.enabled", "true") \
+    return (
+        SparkSession.builder
+        .appName("IsolationForestAnomalyDetection")
+        .master("local[*]")
+        .config("spark.driver.memory", "8g")
+        .config("spark.driver.maxResultSize", "4g")
+        .config("spark.sql.execution.arrow.pyspark.enabled", "true")
         .getOrCreate()
+    )
 
+# ========================
+# Data Load
+# ========================
 def load_data(spark, path):
     df = spark.read.parquet(path)
     if USE_SAMPLE:
@@ -34,6 +44,9 @@ def convert_to_numpy(df):
     y = pdf["label_index"].to_numpy()
     return X, y
 
+# ========================
+# Main Training
+# ========================
 def main():
     spark = init_spark()
     print("🔹 Reading training & testing datasets...")
@@ -45,21 +58,30 @@ def main():
     X_train, y_train = convert_to_numpy(train_df)
     X_test, y_test = convert_to_numpy(test_df)
 
-    # Convert to binary labels for anomaly detection (0 = normal, 1 = anomaly)
+    # Binary labels (0 = normal, 1 = anomaly/attack)
     y_train_binary = np.where(y_train == 0, 0, 1)
     y_test_binary = np.where(y_test == 0, 0, 1)
 
-    print("🔹 Training Isolation Forest model...")
-    model = IsolationForest(n_estimators=100, contamination=0.05, random_state=42)
+    print("🔹 Training tuned Isolation Forest model...")
+
+    model = IsolationForest(
+        n_estimators=500,       # more trees → stability
+        max_samples=0.8,        # sub-sample for diversity
+        contamination=0.02,     # expected anomaly rate
+        max_features=1.0,       # use all features
+        random_state=42,
+        n_jobs=-1
+    )
+
     model.fit(X_train)
 
     print("🔹 Predicting anomalies...")
     preds = model.predict(X_test)
-    preds = np.where(preds == 1, 0, 1)  # Convert IsolationForest output to 0 = normal, 1 = anomaly
+    preds = np.where(preds == 1, 0, 1)  # Map {1=normal, -1=anomaly} → {0=normal, 1=attack}
 
-    print("🔹 Evaluation Results:")
+    print("\n🎯 Evaluation Results (Tuned Isolation Forest):")
     print(confusion_matrix(y_test_binary, preds))
-    print(classification_report(y_test_binary, preds))
+    print(classification_report(y_test_binary, preds, target_names=["Normal", "Attack"]))
 
     print(f"🔹 Saving model to: {MODEL_PATH}")
     os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
@@ -68,5 +90,18 @@ def main():
     spark.stop()
     print("✅ Training completed successfully.")
 
+# ========================
+# Run
+# ========================
 if __name__ == "__main__":
     main()
+
+
+# model result: (Isolation Forest)
+
+# | Metric        | Normal (0) | Attack (1) |
+# | ------------- | ---------- | ---------- |
+# | **Precision** | 0.82       | 0.46       |
+# | **Recall**    | 0.97       | 0.12       |
+# | **F1-score**  | 0.89       | 0.19       |
+# | **Support**   | 91,428     | 22,079     |
