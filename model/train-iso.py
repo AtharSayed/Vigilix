@@ -9,7 +9,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 # Configuration
 BASE_DIR = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/data/processed/cicids2017_features"
-MODEL_PATH = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/models/isolation_forest.pkl"
+MODEL_PATH = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/model_output/isolation_forest.pkl"
 USE_SAMPLE = True  # Set to False if you want to use full data (may crash with large sets)
 SAMPLE_FRACTION = 0.2  # 20% of data to avoid Spark memory crash
 
