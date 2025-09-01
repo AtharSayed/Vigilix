@@ -97,7 +97,7 @@ if __name__ == "__main__":
     main()
 
 
-# model result: (Isolation Forest)
+# model result: (Isolation Forest) (On 20% Dataset)
 
 # | Metric        | Normal (0) | Attack (1) |
 # | ------------- | ---------- | ---------- |
