@@ -12,7 +12,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 # ========================
 BASE_DIR = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/data/processed/cicids2017_features"
 MODEL_PATH = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/model_output/isolation_forest_tuned.pkl"
-USE_SAMPLE = True       # Avoid OOM, set to False for full data
+USE_SAMPLE = False       # Avoid OOM, set to False for full data
 SAMPLE_FRACTION = 0.2   # 20% sample (tune as needed)
 
 # ========================
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     main()
 
 
-# model result: (Isolation Forest) (On 20% Dataset)
+# model result: (Isolation Forest) (Training results from  20% Dataset)
 
 # | Metric        | Normal (0) | Attack (1) |
 # | ------------- | ---------- | ---------- |
@@ -105,3 +105,12 @@ if __name__ == "__main__":
 # | **Recall**    | 0.97       | 0.12       |
 # | **F1-score**  | 0.89       | 0.19       |
 # | **Support**   | 91,428     | 22,079     |
+
+
+
+# model result: (Isolation Forest) (Training results from  100% Dataset)
+# | Class        | Precision | Recall | F1-score | Support |
+# | ------------ | --------- | ------ | -------- | ------- |
+# | Normal       | 0.80      | 0.98   | 0.88     | 454,721 |
+# | Attack       | 0.26      | 0.03   | 0.05     | 111,494 |
+# | **Accuracy** |           |        | 0.79     | 566,215 |
