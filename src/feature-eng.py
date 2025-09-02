@@ -1,75 +1,70 @@
-# feature-eng.py
 import os
+import re
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
 from pyspark.ml.feature import StringIndexer, VectorAssembler, StandardScaler
 
-# ========================
-# 1. Spark Session
-# ========================
-spark = SparkSession.builder \
-    .appName("CICIDS2017-FeatureEngineering") \
-    .config("spark.driver.memory", "8g") \
-    .config("spark.executor.memory", "8g") \
-    .getOrCreate()
+# File paths
+BASE_DIR = "C:/Users/sayed/Desktop/L&T-Project/Vigilix"
+INPUT_FILE = os.path.join(BASE_DIR, "data/processed/cicids2017_preprocessed.parquet")
+OUTPUT_DIR = os.path.join(BASE_DIR, "data/processed/cicids2017_features")
 
-# ========================
-# 2. File Paths
-# ========================
-BASE_DIR = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/data/processed"
-file_path = f"file:///{BASE_DIR}/cicids2017_preprocessed.csv"
-output_path = f"file:///{BASE_DIR}/cicids2017_features"
+def clean_colname(col_name: str) -> str:
+    """Cleans column names for Spark compatibility."""
+    col_name = col_name.strip()
+    col_name = col_name.replace(" ", "_").replace("/", "_").replace(".", "_")
+    return re.sub(r"[^a-zA-Z0-9_]", "", col_name)
 
-print("🔹 Loading preprocessed dataset...")
-df = spark.read.csv(file_path, header=True, inferSchema=True)
-print(f"✅ Dataset loaded with {df.count()} rows and {len(df.columns)} columns")
+def main():
+    # 🔧 Spark configuration to increase memory
+    spark = SparkSession.builder \
+        .appName("FeatureEngineering") \
+        .config("spark.driver.memory", "6g") \
+        .config("spark.executor.memory", "6g") \
+        .config("spark.sql.shuffle.partitions", "8") \
+        .config("spark.default.parallelism", "8") \
+        .getOrCreate()
 
-# ========================
-# 3. Clean column names
-# ========================
-df = df.toDF(*[c.strip().replace(" ", "_").replace(".", "_").replace("/", "_") for c in df.columns])
-print("✅ Column names cleaned")
+    spark.sparkContext.setLogLevel("WARN")
 
-# ========================
-# 4. Encode Label
-# ========================
-target_col = "Label"
-if target_col not in df.columns:
-    raise ValueError(f"❌ Target column '{target_col}' not found in dataset. Available columns: {df.columns}")
+    print("🔹 Loading preprocessed dataset...")
+    df = spark.read.parquet(INPUT_FILE)
+    print(f"✅ Dataset loaded with {df.count()} rows and {len(df.columns)} columns")
 
-indexer = StringIndexer(inputCol=target_col, outputCol="label_index")
-df = indexer.fit(df).transform(df)
-print("✅ Label column encoded")
+    # 🧹 Clean column names
+    df = df.toDF(*[clean_colname(c) for c in df.columns])
 
-# ========================
-# 5. Assemble Features
-# ========================
-feature_cols = [c for c in df.columns if c not in [target_col, "label_index"]]
+    # 🎯 Encode label
+    label_col = "Label"  # Change if your label column is named differently
+    indexer = StringIndexer(inputCol=label_col, outputCol="label_index")
+    df = indexer.fit(df).transform(df)
+    print("✅ Label column encoded")
 
-assembler = VectorAssembler(inputCols=feature_cols, outputCol="features_raw")
-df = assembler.transform(df)
-print(f"✅ Features assembled: {len(feature_cols)} columns")
+    # ⚙️ Assemble features
+    feature_cols = [col for col in df.columns if col not in [label_col, "label_index"]]
+    assembler = VectorAssembler(inputCols=feature_cols, outputCol="features_raw")
+    df = assembler.transform(df)
 
-# ========================
-# 6. Scale Features
-# ========================
-scaler = StandardScaler(inputCol="features_raw", outputCol="features", withMean=True, withStd=True)
-df = scaler.fit(df).transform(df)
-print("✅ Features scaled")
+    # 📏 Scale features
+    scaler = StandardScaler(inputCol="features_raw", outputCol="features", withMean=True, withStd=True)
+    df = scaler.fit(df).transform(df)
+    print(f"✅ Features assembled & scaled: {len(feature_cols)} columns")
 
-# ========================
-# 7. Train/Test Split
-# ========================
-train_df, test_df = df.randomSplit([0.8, 0.2], seed=42)
-print(f"✅ Train size: {train_df.count()}, Test size: {test_df.count()}")
+    # ✂️ Keep only necessary columns
+    df = df.select("features", "label_index")
 
-# ========================
-# 8. Save Processed Data
-# ========================
-if os.path.exists(output_path.replace("file:///", "")):
-    print("⚠️ Output path already exists, overwriting...")
+    # 🔎 Show label distribution
+    print("🔎 Label distribution after feature engineering:")
+    df.groupBy("label_index").count().show()
 
-train_df.write.mode("overwrite").parquet(f"{output_path}/train")
-test_df.write.mode("overwrite").parquet(f"{output_path}/test")
+    # 🔄 Repartition to reduce memory per partition
+    df = df.repartition(8)
 
-print(f"🎉 Feature engineering completed! Saved to {output_path}")
+    # 💾 Save to Parquet
+    print("💾 Saving processed data to Parquet...")
+    df.write.mode("overwrite").parquet(OUTPUT_DIR)
+    print("✅ Feature-engineered data saved.")
+
+    spark.stop()
+
+if __name__ == "__main__":
+    main()
