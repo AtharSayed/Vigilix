@@ -6,7 +6,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 BASE_DIR = "C:/Users/sayed/Desktop/L&T-Project/Vigilix"
 RAW_DATA_DIR = os.path.join(BASE_DIR, "data/raw/")
 PROCESSED_DATA_DIR = os.path.join(BASE_DIR, "data/processed/")
-OUTPUT_FILE = os.path.join(PROCESSED_DATA_DIR, "cicids2017_preprocessed.csv")
+OUTPUT_FILE = os.path.join(PROCESSED_DATA_DIR, "cicids2017_preprocessed.parquet")
 
 os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
 
@@ -29,7 +29,7 @@ def preprocess_dataframe(df, scaler=None, label_encoders=None):
             else:
                 df[col] = label_encoders[col].transform(df[col].astype(str))
 
-    # Scale numeric columns
+    # Scale numeric columns (except Label)
     numeric_cols = df.select_dtypes(include=[np.number]).columns.tolist()
     if "Label" in numeric_cols:
         numeric_cols.remove("Label")
@@ -44,8 +44,8 @@ def preprocess_dataframe(df, scaler=None, label_encoders=None):
 
 
 def main():
-    first = True
     scaler, label_encoders = None, {}
+    all_dfs = []
 
     for file in os.listdir(RAW_DATA_DIR):
         if file.endswith(".csv"):
@@ -57,13 +57,15 @@ def main():
 
             df, scaler, label_encoders = preprocess_dataframe(df, scaler, label_encoders)
 
-            # Append to final file
-            mode = "w" if first else "a"
-            header = first
-            df.to_csv(OUTPUT_FILE, mode=mode, header=header, index=False)
-            first = False
+            all_dfs.append(df)
 
-    print(f"✅ Preprocessed dataset saved at {OUTPUT_FILE}")
+    # Concatenate all processed chunks
+    if all_dfs:
+        final_df = pd.concat(all_dfs, ignore_index=True)
+        final_df.to_parquet(OUTPUT_FILE, index=False)
+        print(f"✅ Preprocessed dataset saved at {OUTPUT_FILE}")
+    else:
+        print("⚠️ No CSV files found in raw data directory.")
 
 
 if __name__ == "__main__":
