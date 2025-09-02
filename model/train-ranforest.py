@@ -10,7 +10,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 # Configuration
 BASE_DIR = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/data/processed/cicids2017_features"
 MODEL_PATH = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/model_output/random_forest.pkl"
-USE_SAMPLE = True   # Keep True for faster debugging, False for full dataset
+USE_SAMPLE = False   # Keep True for faster debugging, False for full dataset
 SAMPLE_FRACTION = 0.2
 
 def init_spark():
