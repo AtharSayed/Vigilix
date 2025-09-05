@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 # 🔹 CONFIG
 # ==============================
 DATA_PATH = r"C:\Users\sayed\Desktop\L&T-Project\Vigilix\data\raw\cic-collection.parquet\cic-collection.parquet"
-CLASSIFICATION_MODE = "binary"   # "binary" or "multi"
+CLASSIFICATION_MODE = "binary"   
 TEST_SIZE = 0.2
 RANDOM_STATE = 42
 
