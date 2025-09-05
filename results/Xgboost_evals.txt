@@ -14,3 +14,26 @@ weighted avg       0.99      0.99      0.99   1,833,517
 ✅ Confusion Matrix:
 [[1,436,309     929]
  [  18,842  377,437]]
+
+
+==== Training Results [2025-09-05 19:11:23] ====
+
+Mode: binary
+Threshold: 0.5
+ROC-AUC: 0.9965, PR-AUC: 0.9916
+
+
+✅ Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.99      1.00      0.99   1437238
+           1       0.99      0.96      0.97    396279
+
+    accuracy                           0.99   1833517
+   macro avg       0.99      0.98      0.98   1833517
+weighted avg       0.99      0.99      0.99   1833517
+
+
+✅ Confusion Matrix:
+[[1432639    4599]
+ [  16781  379498]]
