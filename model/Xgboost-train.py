@@ -106,3 +106,31 @@ plt.show()
 MODEL_PATH = r"C:\Users\sayed\Desktop\L&T-Project\Vigilix\model_output\xgboost_model.json"
 clf.save_model(MODEL_PATH)
 print(f"✅ Model saved at {MODEL_PATH}")
+
+# ==============================
+# 🔹 SAVE RESULTS TO TEXT FILE
+# ==============================
+RESULTS_DIR = r"C:\Users\sayed\Desktop\L&T-Project\Vigilix\results"
+RESULTS_FILE = os.path.join(RESULTS_DIR, "Xgboost_evals.txt")
+
+# Ensure the results directory exists
+os.makedirs(RESULTS_DIR, exist_ok=True)
+
+# Prepare results content
+from datetime import datetime
+
+timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+header = f"\n\n==== Training Results [{timestamp}] ====\n"
+report = classification_report(y_test, y_pred)
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Write to file (append mode)
+with open(RESULTS_FILE, "a") as f:
+    f.write(header)
+    f.write("🔹 Classification Report:\n")
+    f.write(report)
+    f.write("\n🔹 Confusion Matrix:\n")
+    f.write(np.array2string(conf_matrix, separator=', '))
+    f.write("\n" + "=" * 50 + "\n")
+
+print(f"✅ Results appended to {RESULTS_FILE}")
