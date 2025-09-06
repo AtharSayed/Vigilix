@@ -1,5 +1,4 @@
 
-```markdown
 # Vigilix
 
 Vigilix is an advanced network intrusion detection system (NIDS) designed to identify and classify various types of network attacks, including DDoS, DoS, and more, using machine learning models. The system is built to process large-scale network traffic data, with a primary focus on the CIC-IDS 2017 dataset.
