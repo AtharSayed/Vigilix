@@ -1,0 +1,19 @@
+
+
+==== Training Results [2025-09-06 11:04:01] ====
+Mode: binary
+Contamination: 0.01
+🔹 Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.79      0.99      0.88   1437238
+           1       0.48      0.02      0.04    396279
+
+    accuracy                           0.78   1833517
+   macro avg       0.63      0.51      0.46   1833517
+weighted avg       0.72      0.78      0.70   1833517
+
+🔹 Confusion Matrix:
+[[1427813,    9425],
+ [ 387603,    8676]]
+==================================================
