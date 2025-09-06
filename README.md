@@ -13,16 +13,25 @@ The repository is organized to separate different stages of the machine learning
 ```
 
 Vigilix/
-├── data/                  \# Stores raw and processed network traffic data
-│   └── raw/
+├── data/                  # Stores raw and processed network traffic data
+│   └── raw/               # Raw data 
 │       └── cic-collection.parquet/
-├── model/                 \# Contains model training scripts and notebooks
-│   ├── train-iso.py       \# Training script for Isolation Forest
-│   └── train-xgb.py       \# Training script for XGBoost (from original repo)
-├── model\_output/          \# Directory to save trained models
-├── results/               \# Directory to save evaluation reports and plots
-├── .gitignore             \# Git ignore file
-└── README.md              \# This file
+│   └── data-inspect.ipynb  # Jupyter notebook for data inspection
+├── eda/                   # Directory for exploratory data analysis
+│   └── eda.py             # EDA related notebooks or scripts 
+├── model/                 # Contains model training scripts and notebooks
+│   ├── train-iso.py       # Training script for Isolation Forest
+│   ├── train-ranforest.py # Training script for Random Forest
+│   ├── Xgboost-train.py   # Training script for XGBoost
+├── model_output/          # Directory to save trained models (.gitignore file)
+│   └── ...                
+├── results/               # Directory to save evaluation reports and plots
+│   └── ...                # Folder for output reports or plots
+├── src/                   # Contains source code
+│   └── ...                
+├── .gitignore             # Git ignore file (Includes data,model_output and other heavy files)
+└── README.md              # Project documentation file
+
 
 ````
 
@@ -38,7 +47,7 @@ Vigilix/
 
 ---
 
-### ⚙️ Technologies
+### ⚙️ Technologies ( Will be updated with progression )
 
 * **Python**: The core programming language.
 * **scikit-learn**: For Isolation Forest and evaluation metrics.
@@ -82,6 +91,10 @@ Vigilix/
     * To train the **Isolation Forest** model:
         ```bash
         python model/train-iso.py
+        ```
+    * To train the **Random Forest** model:
+        ```bash
+        python model/train-ranforest.py
         ```
 
 3.  **View results**:
