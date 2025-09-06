@@ -46,7 +46,7 @@ Vigilix/
 * **pandas**: For data manipulation and analysis.
 * **matplotlib**: For data visualization and plotting.
 * **joblib**: For saving and loading machine learning models.
-
+* **Apache Spark**: For efficiently loading and running big data analysis and model training .
 ---
 
 ### 📝 Getting Started
@@ -106,4 +106,3 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 Athar Sayed - [sayedathar242@gmail.com]
 Project Link: [https://github.com/AtharSayed/Vigilix](https://github.com/AtharSayed/Vigilix)
-````
