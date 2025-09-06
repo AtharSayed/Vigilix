@@ -1,4 +1,4 @@
-| **Metric**             | **XGBoost** | **Random Forest** | **Better Model for Your Project**                     |
+| **Metric**             | **XGBoost** | **Random Forest** | **Better Model**                                      |
 | ---------------------- | ----------- | ----------------- | ----------------------------------------------------- |
 | **ROC-AUC**            | 0.9965      | 0.9937            | XGBoost (Slightly better at distinguishing classes)   |
 | **PR-AUC**             | 0.9916      | 0.9867            | XGBoost (Slightly better at handling class imbalance) |
