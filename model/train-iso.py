@@ -1,116 +1,125 @@
 import os
-import joblib
+import pandas as pd
 import numpy as np
-from pyspark.sql import SparkSession
-from pyspark.ml.functions import vector_to_array
-from pyspark.sql.functions import col
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import (
+    classification_report, confusion_matrix
+)
 from sklearn.ensemble import IsolationForest
-from sklearn.metrics import classification_report, confusion_matrix
+import matplotlib.pyplot as plt
+from datetime import datetime
 
-# ========================
-# Configuration
-# ========================
-BASE_DIR = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/data/processed/cicids2017_features"
-MODEL_PATH = "C:/Users/sayed/Desktop/L&T-Project/Vigilix/model_output/isolation_forest_tuned.pkl"
-USE_SAMPLE = False       # Avoid OOM, set to False for full data
-SAMPLE_FRACTION = 0.2   # 20% sample (tune as needed)
+# ==============================
+# 🔹 CONFIG
+# ==============================
+DATA_PATH = r"C:\Users\sayed\Desktop\L&T-Project\Vigilix\data\raw\cic-collection.parquet\cic-collection.parquet"
+CLASSIFICATION_MODE = "binary"   # Isolation Forest is primarily for unsupervised anomaly detection
+TEST_SIZE = 0.2
+RANDOM_STATE = 42
+# Contamination is the proportion of outliers in the dataset.
+# This is a critical hyperparameter for Isolation Forest.
+CONTAMINATION = 0.01 
 
-# ========================
-# Spark Init
-# ========================
-def init_spark():
-    return (
-        SparkSession.builder
-        .appName("IsolationForestAnomalyDetection")
-        .master("local[*]")
-        .config("spark.driver.memory", "8g")
-        .config("spark.driver.maxResultSize", "4g")
-        .config("spark.sql.execution.arrow.pyspark.enabled", "true")
-        .getOrCreate()
-    )
+MODEL_DIR = r"C:\Users\sayed\Desktop\L&T-Project\Vigilix\model_output"
+RESULTS_DIR = r"C:\Users\sayed\Desktop\L&T-Project\Vigilix\results"
+MODEL_PATH = os.path.join(MODEL_DIR, "isolation_forest_model.joblib")
+RESULTS_FILE = os.path.join(RESULTS_DIR, "IsolationForest_evals.txt")
 
-# ========================
-# Data Load
-# ========================
-def load_data(spark, path):
-    df = spark.read.parquet(path)
-    if USE_SAMPLE:
-        df = df.sample(fraction=SAMPLE_FRACTION, seed=42)
-    return df.withColumn("features_array", vector_to_array(col("features")))
+os.makedirs(MODEL_DIR, exist_ok=True)
+os.makedirs(RESULTS_DIR, exist_ok=True)
 
-def convert_to_numpy(df):
-    pdf = df.select("features_array", "label_index").toPandas()
-    X = np.vstack(pdf["features_array"].to_numpy())
-    y = pdf["label_index"].to_numpy()
-    return X, y
+# ==============================
+# 🔹 LOAD DATA
+# ==============================
+print("🔹 Loading dataset...")
+df = pd.read_parquet(DATA_PATH, engine="pyarrow")
+print(f"✅ Dataset loaded: {df.shape}")
+print(f"✅ Columns: {list(df.columns)[:10]} ...")
 
-# ========================
-# Main Training
-# ========================
-def main():
-    spark = init_spark()
-    print("🔹 Reading training & testing datasets...")
+# ==============================
+# 🔹 PREPROCESS LABELS
+# ==============================
+print("🔹 Checking label distribution...")
+print(df["Label"].value_counts().head(20))
 
-    train_df = load_data(spark, os.path.join(BASE_DIR, "train"))
-    test_df = load_data(spark, os.path.join(BASE_DIR, "test"))
+if CLASSIFICATION_MODE == "binary":
+    print("🔹 Converting labels to binary (Benign=0, Attack=1)...")
+    df["Label"] = df["Label"].apply(lambda x: 0 if str(x).lower().strip() == "benign" else 1)
+    num_classes = 2
+else:
+    raise ValueError("Isolation Forest is best suited for binary (unsupervised) anomaly detection. Set CLASSIFICATION_MODE to 'binary'.")
 
-    print("🔹 Converting Spark DataFrames to NumPy arrays...")
-    X_train, y_train = convert_to_numpy(train_df)
-    X_test, y_test = convert_to_numpy(test_df)
+# ==============================
+# 🔹 SPLIT DATA
+# ==============================
+non_numeric_cols = df.select_dtypes(include=["object"]).columns.tolist()
+if "Label" in non_numeric_cols:
+    non_numeric_cols.remove("Label")
 
-    # Binary labels (0 = normal, 1 = anomaly/attack)
-    y_train_binary = np.where(y_train == 0, 0, 1)
-    y_test_binary = np.where(y_test == 0, 0, 1)
+X = df.drop(columns=["Label"] + non_numeric_cols)
+y = df["Label"]
 
-    print("🔹 Training tuned Isolation Forest model...")
+assert all(dtype.kind in "ifb" for dtype in X.dtypes), "❌ Non-numeric columns still present in features!"
 
-    model = IsolationForest(
-        n_estimators=500,       # more trees → stability
-        max_samples=0.8,        # sub-sample for diversity
-        contamination=0.02,     # expected anomaly rate
-        max_features=1.0,       # use all features
-        random_state=42,
-        n_jobs=-1
-    )
+print("🔹 Splitting dataset...")
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=TEST_SIZE, stratify=y, random_state=RANDOM_STATE
+)
+print(f"✅ Train size: {X_train.shape}, Test size: {X_test.shape}")
 
-    model.fit(X_train)
+# ==============================
+# 🔹 TRAIN ISOLATION FOREST
+# ==============================
+print("🔹 Training Isolation Forest Classifier...")
+# The Isolation Forest model is an unsupervised algorithm. It does not require 'y_train' during training.
+# It learns to identify anomalies from the structure of the data itself.
+clf = IsolationForest(
+    n_estimators=100, 
+    contamination=CONTAMINATION,
+    random_state=RANDOM_STATE,
+    max_features=1.0,
+    n_jobs=-1 # Use all available cores
+)
 
-    print("🔹 Predicting anomalies...")
-    preds = model.predict(X_test)
-    preds = np.where(preds == 1, 0, 1)  # Map {1=normal, -1=anomaly} → {0=normal, 1=attack}
+# Fit the model on the training data. Note: y_train is not used for unsupervised training.
+clf.fit(X_train)
 
-    print("\n🎯 Evaluation Results (Tuned Isolation Forest):")
-    print(confusion_matrix(y_test_binary, preds))
-    print(classification_report(y_test_binary, preds, target_names=["Normal", "Attack"]))
+# ==============================
+# 🔹 EVALUATE MODEL
+# ==============================
+print("\n🔹 Evaluating model...")
 
-    print(f"🔹 Saving model to: {MODEL_PATH}")
-    os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-    joblib.dump(model, MODEL_PATH)
+# predict returns -1 for anomalies and 1 for normal instances.
+# We convert them to 1 and 0 to match our label scheme (1=Attack, 0=Benign).
+y_pred = clf.predict(X_test)
+y_pred = np.where(y_pred == -1, 1, 0)
 
-    spark.stop()
-    print("✅ Training completed successfully.")
+# Metrics
+print("\n✅ Classification Report:")
+report = classification_report(y_test, y_pred)
+print(report)
 
-# ========================
-# Run
-# ========================
-if __name__ == "__main__":
-    main()
+print("\n✅ Confusion Matrix:")
+conf_matrix = confusion_matrix(y_test, y_pred)
+print(conf_matrix)
 
+# ==============================
+# 🔹 SAVE MODEL & RESULTS
+# ==============================
+import joblib # joblib is preferred for sklearn models
 
-# model result: (Isolation Forest) (Training results from  20% Dataset)
+joblib.dump(clf, MODEL_PATH)
+print(f"✅ Model saved at {MODEL_PATH}")
 
-# | Metric        | Normal (0) | Attack (1) |
-# | ------------- | ---------- | ---------- |
-# | **Precision** | 0.82       | 0.46       |
-# | **Recall**    | 0.97       | 0.12       |
-# | **F1-score**  | 0.89       | 0.19       |
-# | **Support**   | 91,428     | 22,079     |
+timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+with open(RESULTS_FILE, "a", encoding='utf-8') as f:
+    f.write(f"\n\n==== Training Results [{timestamp}] ====\n")
+    f.write(f"Mode: {CLASSIFICATION_MODE}\n")
+    f.write(f"Contamination: {CONTAMINATION}\n")
+    f.write("🔹 Classification Report:\n")
+    f.write(report)
+    f.write("\n🔹 Confusion Matrix:\n")
+    f.write(np.array2string(conf_matrix, separator=", "))
+    f.write("\n" + "=" * 50 + "\n")
 
-
-
-# model result: (Isolation Forest) (Training results from  100% Dataset)
-# | Class        | Precision | Recall | F1-score | Support |
-# | ------------ | --------- | ------ | -------- | ------- |
-# | Normal       | 0.80      | 0.98   | 0.88     | 454,721 |
-# | Attack       | 0.26      | 0.03   | 0.05     | 111,494 |
-# | **Accuracy** |           |        | 0.79     | 566,215 |
+print(f"✅ Results appended to {RESULTS_FILE}")
