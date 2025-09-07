@@ -1,0 +1,10 @@
+flask
+xgboost
+pandas
+numpy
+scikit-learn
+prometheus-client
+requests
+pyarrow
+matplotlib
+seaborn
