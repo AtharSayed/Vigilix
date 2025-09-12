@@ -1,9 +1,0 @@
-| **Metric**             | **XGBoost** | **Random Forest** | **Better Model**                                      |
-| ---------------------- | ----------- | ----------------- | ----------------------------------------------------- |
-| **ROC-AUC**            | 0.9965      | 0.9937            | XGBoost (Slightly better at distinguishing classes)   |
-| **PR-AUC**             | 0.9916      | 0.9867            | XGBoost (Slightly better at handling class imbalance) |
-| **Accuracy**           | 0.99        | 0.99              | Tie                                                   |
-| **Precision (Attack)** | 0.99        | 1                 | Random Forest (No false alarms)                       |
-| **Recall (Attack)**    | 0.96        | 0.95              | XGBoost (Identifies more attacks)                     |
-| **False Positives**    | 4,599       | 1,102             | Random Forest (Far fewer false alarms)                |
-| **False Negatives**    | 16,781      | 20,452            | XGBoost (Fewer missed attacks)                        |
