@@ -1,0 +1,170 @@
+--- Exploratory Data Analysis (EDA) ---
+
+Training Data Info:
+
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 175341 entries, 0 to 175340
+Data columns (total 36 columns):
+ #   Column             Non-Null Count   Dtype   
+---  ------             --------------   -----   
+ 0   dur                175341 non-null  float32 
+ 1   proto              175341 non-null  category
+ 2   service            175341 non-null  category
+ 3   state              175341 non-null  category
+ 4   spkts              175341 non-null  int16   
+ 5   dpkts              175341 non-null  int16   
+ 6   sbytes             175341 non-null  int32   
+ 7   dbytes             175341 non-null  int32   
+ 8   rate               175341 non-null  float32 
+ 9   sload              175341 non-null  float32 
+ 10  dload              175341 non-null  float32 
+ 11  sloss              175341 non-null  int16   
+ 12  dloss              175341 non-null  int16   
+ 13  sinpkt             175341 non-null  float32 
+ 14  dinpkt             175341 non-null  float32 
+ 15  sjit               175341 non-null  float32 
+ 16  djit               175341 non-null  float32 
+ 17  swin               175341 non-null  int16   
+ 18  stcpb              175341 non-null  int64   
+ 19  dtcpb              175341 non-null  int64   
+ 20  dwin               175341 non-null  int16   
+ 21  tcprtt             175341 non-null  float32 
+ 22  synack             175341 non-null  float32 
+ 23  ackdat             175341 non-null  float32 
+ 24  smean              175341 non-null  int16   
+ 25  dmean              175341 non-null  int16   
+ 26  trans_depth        175341 non-null  int16   
+ 27  response_body_len  175341 non-null  int32   
+ 28  ct_src_dport_ltm   175341 non-null  int8    
+ 29  ct_dst_sport_ltm   175341 non-null  int8    
+ 30  is_ftp_login       175341 non-null  int8    
+ 31  ct_ftp_cmd         175341 non-null  int8    
+ 32  ct_flw_http_mthd   175341 non-null  int8    
+ 33  is_sm_ips_ports    175341 non-null  int8    
+ 34  attack_cat         175341 non-null  category
+ 35  label              175341 non-null  int8    
+dtypes: category(4), float32(11), int16(9), int32(3), int64(2), int8(7)
+memory usage: 17.1 MB
+
+Duplicate Rows: 78519
+Duplicates removed.
+
+Missing Values:
+ dur                  0
+proto                0
+service              0
+state                0
+spkts                0
+dpkts                0
+sbytes               0
+dbytes               0
+rate                 0
+sload                0
+dload                0
+sloss                0
+dloss                0
+sinpkt               0
+dinpkt               0
+sjit                 0
+djit                 0
+swin                 0
+stcpb                0
+dtcpb                0
+dwin                 0
+tcprtt               0
+synack               0
+ackdat               0
+smean                0
+dmean                0
+trans_depth          0
+response_body_len    0
+ct_src_dport_ltm     0
+ct_dst_sport_ltm     0
+is_ftp_login         0
+ct_ftp_cmd           0
+ct_flw_http_mthd     0
+is_sm_ips_ports      0
+attack_cat           0
+label                0
+dtype: int64
+
+Label Distribution:
+ label
+0    48894
+1    47928
+Name: count, dtype: int64
+
+Label Distribution (%):
+ label
+0    50.498854
+1    49.501146
+Name: proportion, dtype: float64
+
+--- Categorical Features ---
+
+proto:
+Unique: 133
+Top 5:
+ proto
+tcp     75805
+udp     15238
+ospf      769
+arp       591
+unas      350
+Name: count, dtype: int64
+
+service:
+Unique: 13
+Top 5:
+ service
+-           57971
+http        18090
+dns          7181
+smtp         5023
+ftp-data     3282
+Name: count, dtype: int64
+
+state:
+Unique: 9
+Top 5:
+ state
+FIN    74345
+CON    10976
+INT    10812
+REQ      594
+RST       83
+Name: count, dtype: int64
+
+--- Numerical Features ---
+                     count          mean           std   min           25%           50%           75%           max
+dur                96822.0  1.492981e+00  5.765485e+00   0.0  1.772325e-02  4.445085e-01  1.019829e+00  5.999999e+01
+spkts              96822.0  3.334316e+01  1.826631e+02   1.0  8.000000e+00  1.000000e+01  2.400000e+01  9.616000e+03
+dpkts              96822.0  3.340050e+01  1.436547e+02   0.0  6.000000e+00  8.000000e+00  2.200000e+01  1.097400e+04
+sbytes             96822.0  1.534994e+04  2.348021e+05  28.0  5.640000e+02  1.048000e+03  2.958000e+03  1.296523e+07
+dbytes             96822.0  2.640205e+04  1.882358e+05   0.0  2.680000e+02  6.980000e+02  3.674000e+03  1.465555e+07
+rate               96822.0  2.161670e+04  8.661593e+04   0.0  2.458935e+01  6.384138e+01  2.832861e+03  1.000000e+06
+sload              96822.0  3.673790e+07  1.964004e+08   0.0  8.312729e+03  3.635026e+04  6.434555e+05  5.988000e+09
+dload              96822.0  1.201664e+06  3.158515e+06   0.0  2.972233e+03  9.971823e+03  6.136576e+05  2.242273e+07
+sloss              96822.0  8.779327e+00  8.860353e+01   0.0  2.000000e+00  2.000000e+00  7.000000e+00  4.803000e+03
+dloss              96822.0  1.224382e+01  6.891349e+01   0.0  1.000000e+00  2.000000e+00  7.000000e+00  5.484000e+03
+sinpkt             96822.0  4.529407e+02  4.496901e+03   0.0  5.180153e-01  2.859784e+01  7.966215e+01  8.437149e+04
+dinpkt             96822.0  1.160020e+02  1.137705e+03   0.0  3.617497e-01  3.069361e+01  8.859082e+01  5.671682e+04
+sjit               96822.0  5.879518e+03  4.146123e+04   0.0  2.123134e+01  1.600607e+03  4.671907e+03  1.460480e+06
+djit               96822.0  9.090474e+02  5.047604e+03   0.0  1.396300e+00  8.165988e+01  2.051989e+02  2.893883e+05
+swin               96822.0  1.996315e+02  1.051293e+02   0.0  2.550000e+02  2.550000e+02  2.550000e+02  2.550000e+02
+stcpb              96822.0  1.679497e+09  1.411703e+09   0.0  1.684518e+08  1.543900e+09  2.926504e+09  4.294959e+09
+dtcpb              96822.0  1.676343e+09  1.409521e+09   0.0  1.705094e+08  1.537893e+09  2.922989e+09  4.294882e+09
+dwin               96822.0  1.990147e+02  1.055536e+02   0.0  2.550000e+02  2.550000e+02  2.550000e+02  2.550000e+02
+tcprtt             96822.0  6.997856e-02  9.319680e-02   0.0  5.890000e-04  1.286000e-03  1.314380e-01  2.518893e+00
+synack             96822.0  3.553039e-02  5.181947e-02   0.0  4.660000e-04  1.093000e-03  6.768175e-02  2.100352e+00
+ackdat             96822.0  3.444818e-02  4.792531e-02   0.0  1.150000e-04  2.470000e-04  6.128500e-02  1.520884e+00
+smean              96822.0  1.776281e+02  2.552938e+02  28.0  5.900000e+01  8.300000e+01  1.320000e+02  1.504000e+03
+dmean              96822.0  2.171483e+02  3.142308e+02   0.0  4.500000e+01  8.000000e+01  1.800000e+02  1.458000e+03
+trans_depth        96822.0  1.849580e-01  1.028075e+00   0.0  0.000000e+00  0.000000e+00  0.000000e+00  1.720000e+02
+response_body_len  96822.0  3.824908e+03  7.271763e+04   0.0  0.000000e+00  0.000000e+00  0.000000e+00  6.558056e+06
+ct_src_dport_ltm   96822.0  1.718721e+00  2.656315e+00   1.0  1.000000e+00  1.000000e+00  1.000000e+00  5.100000e+01
+ct_dst_sport_ltm   96822.0  1.205573e+00  1.282107e+00   1.0  1.000000e+00  1.000000e+00  1.000000e+00  4.600000e+01
+is_ftp_login       96822.0  1.920018e-02  1.392460e-01   0.0  0.000000e+00  0.000000e+00  0.000000e+00  4.000000e+00
+ct_ftp_cmd         96822.0  1.920018e-02  1.392460e-01   0.0  0.000000e+00  0.000000e+00  0.000000e+00  4.000000e+00
+ct_flw_http_mthd   96822.0  2.007085e-01  6.019684e-01   0.0  0.000000e+00  0.000000e+00  0.000000e+00  3.000000e+01
+is_sm_ips_ports    96822.0  5.205429e-03  7.196100e-02   0.0  0.000000e+00  0.000000e+00  0.000000e+00  1.000000e+00
