@@ -1,0 +1,5 @@
+--- RandomForest Evaluation Metrics ---
+Accuracy: 0.7982
+Precision: 0.7533
+Recall: 0.9420
+F1-Score: 0.8372

@@ -1,0 +1,5 @@
+--- XGBoost Evaluation Metrics ---
+Accuracy: 0.7891
+Precision: 0.7510
+Recall: 0.9230
+F1-Score: 0.8282

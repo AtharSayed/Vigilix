@@ -1,0 +1,5 @@
+--- Isolation Forest Evaluation Metrics ---
+Accuracy: 0.4441
+Precision: 0.4527
+Recall: 0.0459
+F1-Score: 0.0834
