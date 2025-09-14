@@ -1,3 +1,4 @@
 /data/raw
 /data/processed
 /src/__pycache__/
+models/saved_models/
