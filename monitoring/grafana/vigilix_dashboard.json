@@ -1,0 +1,247 @@
+{
+  "id": null,
+  "title": "Vigilix IDS Dashboard",
+  "tags": ["IDS", "Vigilix", "Prometheus"],
+  "timezone": "browser",
+  "schemaVersion": 36,
+  "version": 4,
+  "refresh": "5s",
+  "panels": [
+    {
+      "type": "gauge",
+      "title": "Model Accuracy",
+      "targets": [{ "expr": "vigilix_model_accuracy * 100" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 80 },
+              { "color": "red", "value": 70 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }
+    },
+    {
+      "type": "gauge",
+      "title": "Model Precision",
+      "targets": [{ "expr": "vigilix_model_precision * 100" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 80 },
+              { "color": "red", "value": 70 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 }
+    },
+    {
+      "type": "gauge",
+      "title": "Model Recall",
+      "targets": [{ "expr": "vigilix_model_recall * 100" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 90 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "x": 12, "y": 0, "w": 6, "h": 4 }
+    },
+    {
+      "type": "gauge",
+      "title": "Model F1-Score",
+      "targets": [{ "expr": "vigilix_model_f1 * 100" }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 90 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "x": 18, "y": 0, "w": 6, "h": 4 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Anomaly Ratio Over Time",
+      "targets": [
+        { "expr": "vigilix_anomaly_ratio" },
+        { "expr": "movingAverage(vigilix_anomaly_ratio[5m])", "legendFormat": "5m Avg" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "fillOpacity": 10,
+            "spanNulls": true
+          }
+        }
+      },
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 6 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Requests per Status Code",
+      "targets": [
+        {
+          "expr": "sum by (status) (rate(vigilix_requests_total[5m]))",
+          "legendFormat": "status={{status}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "stacking": { "mode": "normal" },
+            "fillOpacity": 20
+          }
+        }
+      },
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 6 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Inference Latency (95th Percentile)",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(vigilix_inference_latency_seconds_bucket[5m])) by (le))"
+        },
+        {
+          "expr": "movingAverage(histogram_quantile(0.95, sum(rate(vigilix_inference_latency_seconds_bucket[5m])) by (le))[5m])",
+          "legendFormat": "5m Avg"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 10, "w": 12, "h": 6 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Inference Throughput (req/sec)",
+      "targets": [
+        { "expr": "rate(vigilix_inferences_total[1m])" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "drawStyle": "points",
+            "pointSize": 5
+          }
+        }
+      },
+      "gridPos": { "x": 12, "y": 10, "w": 12, "h": 6 }
+    },
+    {
+      "type": "heatmap",
+      "title": "Inference Latency Distribution",
+      "targets": [
+        {
+          "expr": "rate(vigilix_inference_latency_seconds_bucket[5m])",
+          "legendFormat": "{{le}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "cardinality": "high"
+          }
+        }
+      },
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 6 }
+    },
+    {
+      "type": "stat",
+      "title": "Request Success Rate",
+      "targets": [
+        {
+          "expr": "sum(rate(vigilix_requests_total{status=\"200\"}[5m])) / sum(rate(vigilix_requests_total[5m])) * 100",
+          "legendFormat": "Success Rate"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 90 },
+              { "color": "red", "value": 80 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 6 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Request Rate Over Time",
+      "targets": [
+        {
+          "expr": "rate(vigilix_requests_total[5m])",
+          "legendFormat": "Total Requests"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "custom": {
+            "fillOpacity": 20,
+            "spanNulls": true
+          }
+        }
+      },
+      "gridPos": { "x": 0, "y": 22, "w": 12, "h": 6 }
+    },
+    {
+      "type": "stat",
+      "title": "Total Requests",
+      "targets": [
+        {
+          "expr": "sum(vigilix_requests_total)",
+          "legendFormat": "Total"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "requests",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "orange", "value": 100 },
+              { "color": "red", "value": 500 }
+            ]
+          }
+        }
+      },
+      "gridPos": { "x": 12, "y": 22, "w": 12, "h": 6 }
+    }
+  ]
+}
