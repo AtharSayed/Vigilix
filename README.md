@@ -21,7 +21,8 @@ Welcome to **Vigilix**, an intelligent anomaly detection pipeline built using cl
 
 ```bash
 atharsayed-vigilix/
-├── requirements.txt               # Python dependencies
+├── README.md                      # Project overview and instructions
+├── requirements.txt              # Python dependencies
 ├── models/                        # Model training & inference scripts
 │   ├── app.py                     # Main entry point to run models
 │   ├── hyper-xgb.py               # XGBoost tuning
@@ -39,9 +40,12 @@ atharsayed-vigilix/
 │       ├── RandomForest_results.txt
 │       ├── XGBoost_results.txt
 │       └── XGBoost_Tuned_results.txt
+├── scripts/                       # Automation and environment scripts
+│   └── start-kafka.bat            # Zookeeper,kafka-broker & topic creation script
 ├── src/                           # Core scripts
 │   ├── eda.py                     # Exploratory data analysis
 │   ├── preprocess.py              # Data cleaning and transformation
 │   └── utils.py                   # Helper functions
 └── testing/                       # Unit tests
-    └── test_app.py                # Tests for app.py and models
+    └── test_app.py                # Tests for app.py and model scripts
+
