@@ -21,31 +21,37 @@ Welcome to **Vigilix**, an intelligent anomaly detection pipeline built using cl
 
 ```bash
 atharsayed-vigilix/
-├── README.md                      # Project overview and instructions
-├── requirements.txt              # Python dependencies
-├── models/                        # Model training & inference scripts
-│   ├── app.py                     # Main entry point to run models
-│   ├── hyper-xgb.py               # XGBoost tuning
-│   ├── isolation-forest.py        # Isolation Forest implementation
-│   ├── random-forest.py           # Random Forest implementation
-│   └── xgboost_model.py           # XGBoost implementation
-├── monitoring/
-│   └── grafana/
-│       └── vigilix_dashboard.json # Grafana dashboard config
-├── results/
-│   ├── eda/
-│   │   └── eda_summary.txt        # EDA output
-│   └── models/
-│       ├── isolationforest_results.txt
-│       ├── RandomForest_results.txt
-│       ├── XGBoost_results.txt
-│       └── XGBoost_Tuned_results.txt
-├── scripts/                       # Automation and environment scripts
-│   └── start-kafka.bat            # Zookeeper,kafka-broker & topic creation script
-├── src/                           # Core scripts
-│   ├── eda.py                     # Exploratory data analysis
-│   ├── preprocess.py              # Data cleaning and transformation
-│   └── utils.py                   # Helper functions
-└── testing/                       # Unit tests
-    └── test_app.py                # Tests for app.py and model scripts
+├── README.md                      # Project overview, setup instructions, and usage guide
+├── requirements.txt              # Python dependencies for the project
+├── models/                        # Model training, tuning, and inference scripts
+│   ├── app.py                     # Main entry point to run and evaluate models
+│   ├── hyper-xgb.py               # Hyperparameter tuning for XGBoost
+│   ├── isolation-forest.py        # Isolation Forest anomaly detection implementation
+│   ├── random-forest.py           # Random Forest classification model
+│   └── xgboost_model.py           # XGBoost classification model
+├── monitoring/                    # Monitoring stack configuration
+│   ├── grafana/                   # Grafana dashboard setup
+│   │   ├── datasource.yaml        # Grafana data source configuration
+│   │   └── vigilix_dashboard.json # Predefined Grafana dashboard layout
+│   └── prometheus/                # Prometheus configuration
+│       └── prometheus.yml         # Prometheus scrape targets and settings
+├── results/                       # Output results from EDA and model evaluations
+│   ├── eda/                       # Exploratory Data Analysis outputs
+│   │   └── eda_summary.txt        # Summary statistics and insights from EDA
+│   └── models/                    # Model performance metrics
+│       ├── isolationforest_results.txt   # Results from Isolation Forest
+│       ├── RandomForest_results.txt      # Results from Random Forest
+│       ├── XGBoost_results.txt           # Results from XGBoost
+│       └── XGBoost_Tuned_results.txt     # Results from tuned XGBoost
+├── scripts/                       # Automation and environment setup scripts
+│   └── start-kafka.bat            # Script to start Zookeeper, Kafka broker, and create topics
+├── src/                           # Core data processing and utility scripts
+│   ├── eda.py                     # Script for performing EDA
+│   ├── preprocess.py              # Data cleaning and preprocessing logic
+│   └── utils.py                   # Common helper functions used across modules
+├── streaming/                     # Kafka streaming components
+│   ├── kafka_consumer.py          # Kafka consumer to ingest and process data
+│   └── kafka_producer.py          # Kafka producer to send data to topics
+└── testing/                       # Unit and integration tests
+    └── test_app.py                # Tests for model pipeline and app logic
 
