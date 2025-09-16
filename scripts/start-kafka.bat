@@ -1,41 +1,38 @@
 @echo off
-title Kafka Setup Script
-echo ========================================
-echo 🚀 Starting Zookeeper and Kafka Broker
-echo ========================================
+cd /d C:\kafka
 
-REM --- CONFIGURABLE KAFKA PATH ---
-set KAFKA_DIR=C:\kafka
+REM =========================
+REM Start Zookeeper
+REM =========================
+echo Starting Zookeeper...
+start "Zookeeper" cmd /k ".\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties"
+timeout /t 10 >nul
 
-REM --- Clean up previous Kafka data ---
-echo ▶ Cleaning up previous Kafka data...
-rmdir /s /q "%KAFKA_DIR%\tmp"
-mkdir "%KAFKA_DIR%\tmp"
+REM =========================
+REM Start Kafka Broker
+REM =========================
+echo Starting Kafka Broker...
+start "Kafka Broker" cmd /k ".\bin\windows\kafka-server-start.bat .\config\server.properties"
+timeout /t 15 >nul
 
-REM --- Step 1: Start Zookeeper ---
-echo ▶ Starting Zookeeper...
-start "Zookeeper" cmd /k "cd /d %KAFKA_DIR% && bin\windows\zookeeper-server-start.bat config\zookeeper.properties"
+REM =========================
+REM Wait for Kafka to be ready (check if port 9092 is listening)
+REM =========================
+echo Waiting for Kafka to be ready...
+:WAIT_FOR_KAFKA
+    echo Checking if Kafka is listening on port 9092...
+    netstat -an | findstr "9092" | findstr "LISTENING" >nul
+    if %ERRORLEVEL% neq 0 (
+        echo Kafka is not ready yet. Retrying in 5 seconds...
+        timeout /t 5 >nul
+        goto WAIT_FOR_KAFKA
+    )
 
-REM --- Wait for Zookeeper to initialize ---
-timeout /t 10 /nobreak >nul
+REM =========================
+REM Create Kafka topic
+REM =========================
+echo Kafka is ready. Creating topic 'vigilix-stream'...
+.\bin\windows\kafka-topics.bat --create --if-not-exists --topic vigilix-stream --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
 
-REM --- Step 2: Start Kafka Broker ---
-echo ▶ Starting Kafka Broker...
-start "Kafka Broker" cmd /k "cd /d %KAFKA_DIR% && bin\windows\kafka-server-start.bat config\server.properties"
-
-REM --- Wait for Kafka Broker to initialize ---
-timeout /t 15 /nobreak >nul
-
-REM --- Step 3: Create Topic vigilix-stream ---
-echo ▶ Creating topic 'vigilix-stream' if it doesn't exist...
-cd /d %KAFKA_DIR%
-bin\windows\kafka-topics.bat --create --if-not-exists --topic vigilix-stream --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-
-REM --- Step 4: List all topics to confirm creation ---
-echo ▶ Listing all Kafka topics...
-bin\windows\kafka-topics.bat --list --bootstrap-server localhost:9092
-
-echo ========================================
-echo ✅ Kafka is running with topic: vigilix-stream
-echo ========================================
+echo Kafka setup complete.
 pause
