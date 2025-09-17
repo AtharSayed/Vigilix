@@ -5,3 +5,7 @@ seaborn
 scikit-learn
 fastparquet
 joblib
+xgboost
+flask
+prometheus-client
+gunicorn
