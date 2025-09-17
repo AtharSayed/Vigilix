@@ -29,28 +29,29 @@ atharsayed-vigilix/
 │   ├── isolation-forest.py        # Isolation Forest anomaly detection implementation
 │   ├── random-forest.py           # Random Forest classification model
 │   └── xgboost_model.py           # XGBoost classification model
-├── monitoring/                    # Monitoring stack configuration
-│   ├── grafana/                   # Grafana dashboard setup
-│   │   ├── datasource.yaml        # Grafana data source configuration
-│   │   └── vigilix_dashboard.json # Predefined Grafana dashboard layout
-│   └── prometheus/                # Prometheus configuration
-│       └── prometheus.yml         # Prometheus scrape targets and settings
-├── results/                       # Output results from EDA and model evaluations
-│   ├── eda/                       # Exploratory Data Analysis outputs
-│   │   └── eda_summary.txt        # Summary statistics and insights from EDA
-│   └── models/                    # Model performance metrics
-│       ├── isolationforest_results.txt   # Results from Isolation Forest
-│       ├── RandomForest_results.txt      # Results from Random Forest
-│       ├── XGBoost_results.txt           # Results from XGBoost
-│       └── XGBoost_Tuned_results.txt     # Results from tuned XGBoost
-├── scripts/                       # Automation and environment setup scripts
-│   └── start-kafka.bat            # Script to start Zookeeper, Kafka broker, and create topics
-├── src/                           # Core data processing and utility scripts
-│   ├── eda.py                     # Script for performing EDA
-│   ├── preprocess.py              # Data cleaning and preprocessing logic
+├── monitoring/                    # Monitoring stack configuration for model/data pipeline
+│   ├── grafana/                   # Grafana setup for data visualization
+│   │   ├── datasource.yaml        # Grafana data source configuration (e.g., Prometheus)
+│   │   └── vigilix_dashboard.json # Predefined dashboard for model and system metrics
+│   └── prometheus/                # Prometheus setup for metrics scraping
+│       └── prometheus.yml         # Configuration file for Prometheus scrape jobs
+├── results/                       # Output directory for EDA summaries and model evaluations
+│   ├── eda/                       # EDA result storage
+│   │   └── eda_summary.txt        # Summary of statistical and visual data insights
+│   └── models/                    # Model evaluation metrics and performance logs
+│       ├── isolationforest_results.txt   # Evaluation results for Isolation Forest
+│       ├── RandomForest_results.txt      # Evaluation results for Random Forest
+│       ├── XGBoost_results.txt           # Evaluation results for XGBoost
+│       └── XGBoost_Tuned_results.txt     # Evaluation results after XGBoost tuning
+├── scripts/                       # Scripts to automate environment or service startup
+│   ├── start-kafka.bat            # Script to launch Zookeeper, Kafka broker, and topics
+│   └── start-prometheus.bat       # NEW: Script to start Prometheus monitoring service
+├── src/                           # Core data processing logic and helper utilities
+│   ├── eda.py                     # Script to perform Exploratory Data Analysis
+│   ├── preprocess.py              # Data cleaning and transformation logic
 │   └── utils.py                   # Common helper functions used across modules
-├── streaming/                     # Kafka streaming components
-│   ├── kafka_consumer.py          # Kafka consumer to ingest and process data
+├── streaming/                     # Kafka-based streaming components
+│   ├── kafka_consumer.py          # Kafka consumer to receive and process streaming data
 │   └── kafka_producer.py          # Kafka producer to send data to topics
 └── testing/                       # Unit and integration tests
     └── test_app.py                # Tests for model pipeline and app logic
