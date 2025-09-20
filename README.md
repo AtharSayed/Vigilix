@@ -17,6 +17,18 @@ Welcome to **Vigilix**, an intelligent anomaly detection pipeline built using cl
 
 ---
 
+## 🖼️ System Architecture & Dashboard
+
+### Network Intrusion Detection & Monitoring System Architecture
+![Network Intrusion Detection & Monitoring System Architecture](results/images/System-Design.png)
+*Diagram illustrating the architecture of the Vigilix system, including data ingestion, processing, AI model inference, and monitoring visualization.*
+
+### NIDS Dashboard - Vigilix Kafka Monitoring
+![NIDS Dashboard - Vigilix Kafka Monitoring](results/images/Sample-Dashboard-Screenshot.png)
+*Screenshot of the Vigilix Kafka Monitoring dashboard, showcasing real-time metrics such as total network requests, anomalies detected, anomaly ratio, and model performance metrics.*
+
+---
+
 ## 🧭 Project Structure
 
 ```bash
@@ -38,6 +50,9 @@ atharsayed-vigilix/
 ├── results/                       # Output directory for EDA summaries and model evaluations
 │   ├── eda/                       # EDA result storage
 │   │   └── eda_summary.txt        # Summary of statistical and visual data insights
+│   └── images/                    # Directory for storing system architecture and dashboard images
+│   │   ├── Sample-Dashboard-Screenshot.png  # Dashboard screenshot
+│   │   └── System-Design.png                # System architecture diagram
 │   └── models/                    # Model evaluation metrics and performance logs
 │       ├── isolationforest_results.txt   # Evaluation results for Isolation Forest
 │       ├── RandomForest_results.txt      # Evaluation results for Random Forest
@@ -52,7 +67,7 @@ atharsayed-vigilix/
 │   └── utils.py                   # Common helper functions used across modules
 ├── streaming/                     # Kafka-based streaming components
 │   ├── kafka_consumer.py          # Kafka consumer to receive and process streaming data
-│   └── kafka_producer.py          # Kafka producer to send data to topics
+│   ├── kafka_producer.py          # Kafka producer to send data to topics
+│   └── synthetic-producer.py      # NEW: Kafka producer for synthetic data generation
 └── testing/                       # Unit and integration tests
     └── test_app.py                # Tests for model pipeline and app logic
-
