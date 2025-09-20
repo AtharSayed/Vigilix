@@ -1,4 +1,3 @@
-pandas
 numpy
 matplotlib
 seaborn
@@ -9,3 +8,5 @@ xgboost
 flask
 prometheus-client
 gunicorn
+kafka-python  
+requests      
