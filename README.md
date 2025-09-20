@@ -17,7 +17,7 @@ Welcome to **Vigilix**, an intelligent anomaly detection pipeline built using cl
 
 ---
 
-## 🖼️ System Architecture & Dashboard
+## 🖼️ System Architecture 
 
 ### Network Intrusion Detection & Monitoring System Architecture
 ![Network Intrusion Detection & Monitoring System Architecture](results/images/System-Design.png)
