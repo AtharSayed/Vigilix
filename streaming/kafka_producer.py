@@ -5,7 +5,7 @@ import pandas as pd
 from kafka import KafkaProducer
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATA_PATH = os.path.join(BASE_DIR, "data", "processed", "UNSW_NB15_testing-set.parquet")
+DATA_PATH = os.path.join(BASE_DIR, "data", "processed", "UNSW_NB15_testing-set.parquet") # Real Time simulation from Test Data
 
 producer = KafkaProducer(
     bootstrap_servers="localhost:9092",
