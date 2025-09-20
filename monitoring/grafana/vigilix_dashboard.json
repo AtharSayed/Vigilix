@@ -18,10 +18,179 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 8,
+  "id": 19,
   "links": [],
   "panels": [
     {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "expr": "vigilix_kafka_requests_total",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "title": "📈 Total Network Requests",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "expr": "vigilix_kafka_anomalies_total",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "title": "🚨 Total Anomalies Detected",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.1.1",
+      "targets": [
+        {
+          "expr": "vigilix_kafka_anomaly_ratio",
+          "format": "time_series",
+          "refId": "A"
+        }
+      ],
+      "title": "⚠️ Anomaly Ratio",
+      "type": "stat"
+    },
+    {
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -35,12 +204,8 @@
                 "value": 0
               },
               {
-                "color": "orange",
-                "value": 80
-              },
-              {
                 "color": "red",
-                "value": 70
+                "value": 80
               }
             ]
           },
@@ -51,10 +216,10 @@
       "gridPos": {
         "h": 4,
         "w": 6,
-        "x": 0,
+        "x": 12,
         "y": 0
       },
-      "id": 1,
+      "id": 8,
       "options": {
         "minVizHeight": 75,
         "minVizWidth": 75,
@@ -81,6 +246,7 @@
       "type": "gauge"
     },
     {
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -94,12 +260,8 @@
                 "value": 0
               },
               {
-                "color": "orange",
-                "value": 80
-              },
-              {
                 "color": "red",
-                "value": 70
+                "value": 80
               }
             ]
           },
@@ -110,10 +272,10 @@
       "gridPos": {
         "h": 4,
         "w": 6,
-        "x": 6,
+        "x": 18,
         "y": 0
       },
-      "id": 2,
+      "id": 9,
       "options": {
         "minVizHeight": 75,
         "minVizWidth": 75,
@@ -140,6 +302,7 @@
       "type": "gauge"
     },
     {
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -151,10 +314,6 @@
               {
                 "color": "green",
                 "value": 0
-              },
-              {
-                "color": "orange",
-                "value": 90
               },
               {
                 "color": "red",
@@ -169,10 +328,10 @@
       "gridPos": {
         "h": 4,
         "w": 6,
-        "x": 12,
-        "y": 0
+        "x": 0,
+        "y": 3
       },
-      "id": 3,
+      "id": 10,
       "options": {
         "minVizHeight": 75,
         "minVizWidth": 75,
@@ -199,6 +358,7 @@
       "type": "gauge"
     },
     {
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -210,10 +370,6 @@
               {
                 "color": "green",
                 "value": 0
-              },
-              {
-                "color": "orange",
-                "value": 90
               },
               {
                 "color": "red",
@@ -228,10 +384,10 @@
       "gridPos": {
         "h": 4,
         "w": 6,
-        "x": 18,
-        "y": 0
+        "x": 6,
+        "y": 3
       },
-      "id": 4,
+      "id": 11,
       "options": {
         "minVizHeight": 75,
         "minVizWidth": 75,
@@ -258,6 +414,7 @@
       "type": "gauge"
     },
     {
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -272,7 +429,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -287,7 +444,7 @@
               "type": "linear"
             },
             "showPoints": "auto",
-            "spanNulls": true,
+            "spanNulls": false,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -314,103 +471,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 4
-      },
-      "id": 5,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.1.1",
-      "targets": [
-        {
-          "expr": "vigilix_anomaly_ratio",
-          "refId": "A"
-        },
-        {
-          "expr": "avg_over_time(vigilix_anomaly_ratio[5m])",
-          "legendFormat": "5m Avg",
-          "refId": "B"
-        }
-      ],
-      "title": "Anomaly Ratio Over Time",
-      "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "normal"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
+        "h": 9,
         "w": 12,
         "x": 12,
         "y": 4
       },
-      "id": 6,
+      "id": 19,
       "options": {
         "legend": {
           "calcs": [],
@@ -427,15 +493,16 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "expr": "sum by (status) (rate(vigilix_requests_total[5m]))",
-          "legendFormat": "status={{status}}",
+          "expr": "rate(vigilix_kafka_requests_total[1m])",
+          "format": "time_series",
           "refId": "A"
         }
       ],
-      "title": "Requests per Status Code",
+      "title": "📊 Requests Over Time",
       "type": "timeseries"
     },
     {
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -495,9 +562,9 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 10
+        "y": 7
       },
-      "id": 7,
+      "id": 4,
       "options": {
         "legend": {
           "calcs": [],
@@ -514,388 +581,17 @@
       "pluginVersion": "12.1.1",
       "targets": [
         {
-          "expr": "histogram_quantile(0.95, sum(rate(vigilix_inference_latency_seconds_bucket[5m])) by (le))",
+          "expr": "rate(vigilix_kafka_anomalies_total[1m])",
+          "format": "time_series",
           "refId": "A"
-        },
-        {
-          "expr": "avg_over_time(histogram_quantile(0.95, sum(rate(vigilix_inference_latency_seconds_bucket[5m])) by (le))[5m])",
-          "legendFormat": "5m Avg",
-          "refId": "B"
         }
       ],
-      "title": "Inference Latency (95th Percentile)",
+      "title": "📊 Anomalies Over Time",
       "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "points",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 10
-      },
-      "id": 8,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.1.1",
-      "targets": [
-        {
-          "expr": "rate(vigilix_inferences_total[1m])",
-          "refId": "A"
-        }
-      ],
-      "title": "Inference Throughput (req/sec)",
-      "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "scaleDistribution": {
-              "type": "linear"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 16
-      },
-      "id": 9,
-      "options": {
-        "calculate": true,
-        "calculation": {},
-        "cellGap": 2,
-        "cellValues": {},
-        "color": {
-          "exponent": 0.5,
-          "fill": "dark-orange",
-          "mode": "scheme",
-          "reverse": false,
-          "scale": "exponential",
-          "scheme": "Oranges",
-          "steps": 128
-        },
-        "exemplars": {
-          "color": "rgba(255,0,255,0.7)"
-        },
-        "filterValues": {
-          "le": 1e-9
-        },
-        "legend": {
-          "show": false
-        },
-        "rowsFrame": {
-          "layout": "auto"
-        },
-        "showValue": "never",
-        "tooltip": {
-          "mode": "none",
-          "showColorScale": false,
-          "yHistogram": false
-        },
-        "yAxis": {
-          "axisPlacement": "left",
-          "reverse": false
-        }
-      },
-      "pluginVersion": "12.1.1",
-      "targets": [
-        {
-          "expr": "rate(vigilix_inference_latency_seconds_bucket[5m])",
-          "legendFormat": "{{le}}",
-          "refId": "A"
-        }
-      ],
-      "title": "Inference Latency Distribution",
-      "type": "heatmap"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "orange",
-                "value": 90
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 16
-      },
-      "id": 10,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.1.1",
-      "targets": [
-        {
-          "expr": "sum(rate(vigilix_requests_total{status=\"200\"}[5m])) / sum(rate(vigilix_requests_total[5m])) * 100",
-          "legendFormat": "Success Rate",
-          "refId": "A"
-        }
-      ],
-      "title": "Request Success Rate",
-      "type": "stat"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 20,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "reqps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 0,
-        "y": 22
-      },
-      "id": 11,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.1.1",
-      "targets": [
-        {
-          "expr": "rate(vigilix_requests_total[5m])",
-          "legendFormat": "Total Requests",
-          "refId": "A"
-        }
-      ],
-      "title": "Request Rate Over Time",
-      "type": "timeseries"
-    },
-    {
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "orange",
-                "value": 100
-              },
-              {
-                "color": "red",
-                "value": 500
-              }
-            ]
-          },
-          "unit": "requests"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 12,
-        "x": 12,
-        "y": 22
-      },
-      "id": 12,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.1.1",
-      "targets": [
-        {
-          "expr": "sum(vigilix_requests_total)",
-          "legendFormat": "Total",
-          "refId": "A"
-        }
-      ],
-      "title": "Total Requests",
-      "type": "stat"
     }
   ],
   "preload": false,
-  "refresh": "5s",
+  "refresh": "10s",
   "schemaVersion": 41,
   "tags": [
     "IDS",
@@ -906,12 +602,12 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Vigilix IDS Dashboard",
-  "uid": "805175aa-5c4f-47a7-accd-ea40a75f9c44",
-  "version": 4
+  "title": "NIDS Dashboard - Vigilix Kafka Monitoring",
+  "uid": "0b1ea385-cc05-4c5c-98a2-0bb6e170b35b",
+  "version": 8
 }
