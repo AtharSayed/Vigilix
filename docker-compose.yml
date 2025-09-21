@@ -29,11 +29,11 @@ services:
     ports:
       - "9092:9092"
     healthcheck:
-      test: ["CMD", "kafka-topics.sh", "--list", "--bootstrap-server", "vigilix-kafka:9092"]
+      test: ["CMD", "/usr/bin/kafka-topics", "--list", "--bootstrap-server", "localhost:9092"]
       interval: 20s
       timeout: 15s
-      retries: 25
-      start_period: 120s
+      retries: 50
+      start_period: 300s
     networks:
       - vigilix-net
 
@@ -41,7 +41,7 @@ services:
     image: prom/prometheus:v2.45.0
     container_name: vigilix-prometheus
     volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9000:9090"
     networks:
