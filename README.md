@@ -23,7 +23,7 @@ Welcome to **Vigilix**, an intelligent anomaly detection pipeline built using cl
 ![Network Intrusion Detection & Monitoring System Architecture](results/images/System-Design.png)
 *Diagram illustrating the architecture of the Vigilix system, including data ingestion, processing, AI model inference, and monitoring visualization.*
 
-### NIDS Dashboard - Vigilix Kafka Monitoring
+### NIDS Dashboard - Vigilix Kafka Real Time  Monitoring
 ![NIDS Dashboard - Vigilix Kafka Monitoring](results/images/Sample-Dashboard-Screenshot.png)
 *Screenshot of the Vigilix Kafka Monitoring dashboard, showcasing real-time metrics such as total network requests, anomalies detected, anomaly ratio, and model performance metrics.*
 
