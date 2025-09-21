@@ -35,6 +35,7 @@ Welcome to **Vigilix**, an intelligent anomaly detection pipeline built using cl
 atharsayed-vigilix/
 ├── README.md                      # Project overview, setup instructions, and usage guide
 ├── requirements.txt              # Python dependencies for the project
+├── main.py                        # MAIN ORCHESTRATOR - moved from root to src/
 ├── models/                        # Model training, tuning, and inference scripts
 │   ├── app.py                     # Main entry point to run and evaluate models
 │   ├── hyper-xgb.py               # Hyperparameter tuning for XGBoost
@@ -60,14 +61,15 @@ atharsayed-vigilix/
 │       └── XGBoost_Tuned_results.txt     # Evaluation results after XGBoost tuning
 ├── scripts/                       # Scripts to automate environment or service startup
 │   ├── start-kafka.bat            # Script to launch Zookeeper, Kafka broker, and topics
-│   └── start-prometheus.bat       # NEW: Script to start Prometheus monitoring service
+│   └── start-prometheus.bat       # Script to start Prometheus monitoring service
 ├── src/                           # Core data processing logic and helper utilities
+│   ├── main.py                    # MAIN ORCHESTRATOR - moved here from root
 │   ├── eda.py                     # Script to perform Exploratory Data Analysis
 │   ├── preprocess.py              # Data cleaning and transformation logic
 │   └── utils.py                   # Common helper functions used across modules
 ├── streaming/                     # Kafka-based streaming components
 │   ├── kafka_consumer.py          # Kafka consumer to receive and process streaming data
 │   ├── kafka_producer.py          # Kafka producer to send data to topics
-│   └── synthetic-producer.py      # NEW: Kafka producer for synthetic data generation
+│   └── synthetic-producer.py      # Kafka producer for synthetic data generation
 └── testing/                       # Unit and integration tests
     └── test_app.py                # Tests for model pipeline and app logic
