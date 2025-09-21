@@ -12,8 +12,9 @@ Welcome to **Vigilix**, an intelligent anomaly detection pipeline built using cl
 - 🧹 Preprocessing utilities
 - ⚙️ Model training and evaluation
 - 🧪 Unit testing for critical components
-- 📈 Monitoring with Grafana dashboards
+- 📈 Real-time Monitoring using Grafana and Prometheus.
 - 🔄 CI/CD compatibility for automation
+- 🛠️ Real-time Data Integration by collecting system performance metrics and using that data in customizable dashboards.
 
 ---
 

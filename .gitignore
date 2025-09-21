@@ -3,3 +3,6 @@
 models/saved_models/
 # Ignore all __pycache__ folders recursively
 __pycache__/
+# log file for main.py
+/src/orchestrator.log 
+ 

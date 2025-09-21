@@ -4,7 +4,16 @@ import time
 import os
 import socket
 import webbrowser
+import logging
 from pathlib import Path
+
+# Set up logging
+LOG_FILE = Path(__file__).parent / "orchestrator.log"
+logging.basicConfig(
+    filename=LOG_FILE,
+    level=logging.INFO,  # Set the logging level to INFO to log detailed messages
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
 
 # Get the project root directory (main.py is in src/, so go up one level)
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -37,18 +46,18 @@ def start_bat(path: Path, title: str):
     Starts a .bat file in a new terminal window.
     """
     if not path.exists():
-        print(f"Error: Missing {path}")
-        print(f"Please ensure the file exists at: {path.absolute()}")
+        logging.error(f"Error: Missing {path}")
+        logging.error(f"Please ensure the file exists at: {path.absolute()}")
         sys.exit(1)
     
-    print(f"Starting: {path.name}")
+    logging.info(f"Starting: {path.name}")
     try:
         # Use os.system with proper quoting to handle special characters
         bat_command = f'cd /d "{path.parent}" && start "{title}" "{path.name}"'
         os.system(bat_command)
         time.sleep(3)  # Give it a moment to start
     except Exception as e:
-        print(f"Error starting {title}: {e}")
+        logging.error(f"Error starting {title}: {e}")
         sys.exit(1)
 
 def start_py(path: Path, title: str, args=None):
@@ -56,12 +65,12 @@ def start_py(path: Path, title: str, args=None):
     Starts a Python script in a new terminal window.
     """
     if not path.exists():
-        print(f"Error: Missing {path}")
-        print(f"Please ensure the file exists at: {path.absolute()}")
+        logging.error(f"Error: Missing {path}")
+        logging.error(f"Please ensure the file exists at: {path.absolute()}")
         sys.exit(1)
     
     args = args or []
-    print(f"Starting: {path.name}")
+    logging.info(f"Starting: {path.name}")
     try:
         # Build the command properly with proper quoting
         args_str = " ".join([f'"{arg}"' for arg in args])
@@ -69,20 +78,20 @@ def start_py(path: Path, title: str, args=None):
         os.system(py_command)
         time.sleep(2)  # Give it a moment to start
     except Exception as e:
-        print(f"Error starting {title}: {e}")
+        logging.error(f"Error starting {title}: {e}")
         sys.exit(1)
 
 def check_prerequisites():
     """
     Check if all required components are available
     """
-    print("Checking prerequisites...")
+    logging.info("Checking prerequisites...")
     
     # Check if Python is available
     try:
         subprocess.run([sys.executable, "--version"], capture_output=True, check=True)
     except:
-        print("Error: Python not found or not accessible")
+        logging.error("Error: Python not found or not accessible")
         return False
     
     # Check if required files exist
@@ -90,89 +99,89 @@ def check_prerequisites():
     missing_files = [str(f) for f in required_files if not f.exists()]
     
     if missing_files:
-        print("Error: Missing required files:")
+        logging.error("Error: Missing required files:")
         for file in missing_files:
-            print(f"  - {file}")
+            logging.error(f"  - {file}")
         return False
     
-    print("All prerequisites satisfied ✓")
+    logging.info("All prerequisites satisfied ✓")
     return True
 
 def main():
-    print("=" * 60)
-    print("VIGILIX REAL-TIME ANOMALY DETECTION PIPELINE")
-    print("=" * 60)
+    logging.info("=" * 60)
+    logging.info("VIGILIX REAL-TIME ANOMALY DETECTION PIPELINE")
+    logging.info("=" * 60)
     
     # Check prerequisites first
     if not check_prerequisites():
-        print("\nPlease ensure all components are properly set up.")
-        print("Refer to README.md for setup instructions.")
+        logging.error("\nPlease ensure all components are properly set up.")
+        logging.error("Refer to README.md for setup instructions.")
         sys.exit(1)
     
-    print("\nStarting components...")
+    logging.info("\nStarting components...")
 
     # Start Kafka and Zookeeper
-    print("\n1. Starting Zookeeper/Kafka...")
+    logging.info("\n1. Starting Zookeeper/Kafka...")
     start_bat(KAFKA_BAT, "Vigilix-Kafka")
 
     # Wait for Kafka to be ready
-    print("\n2. Waiting for Kafka on localhost:9092 ...")
+    logging.info("\n2. Waiting for Kafka on localhost:9092 ...")
     if wait_for_port(BROKER_HOST, BROKER_PORT, timeout=120):
-        print("✓ Kafka is ready.")
+        logging.info("✓ Kafka is ready.")
     else:
-        print("⚠ Warning: Kafka not detected on 9092. Producer/consumer may fail.")
-        print("Continuing anyway...")
+        logging.warning("⚠ Warning: Kafka not detected on 9092. Producer/consumer may fail.")
+        logging.warning("Continuing anyway...")
 
     # Start Prometheus
-    print("\n3. Starting Prometheus...")
+    logging.info("\n3. Starting Prometheus...")
     start_bat(PROM_BAT, "Vigilix-Prometheus")
 
     # Wait for Prometheus to be ready
-    print("\n4. Waiting for Prometheus on localhost:9090 ...")
+    logging.info("\n4. Waiting for Prometheus on localhost:9090 ...")
     if wait_for_port(PROM_HOST, PROM_PORT, timeout=60):
-        print("✓ Prometheus is ready.")
+        logging.info("✓ Prometheus is ready.")
     else:
-        print("⚠ Warning: Prometheus not detected on 9090.")
-        print("Continuing anyway...")
+        logging.warning("⚠ Warning: Prometheus not detected on 9090.")
+        logging.warning("Continuing anyway...")
 
     # Start synthetic producer
-    print("\n5. Starting synthetic data producer...")
+    logging.info("\n5. Starting synthetic data producer...")
     start_py(PRODUCER, "Vigilix-Producer")
 
     # Start Kafka consumer
-    print("\n6. Starting Kafka consumer (metrics on :8001)...")
+    logging.info("\n6. Starting Kafka consumer (metrics on :8001)...")
     start_py(CONSUMER, "Vigilix-Consumer")
 
     # Open Grafana dashboard
-    print(f"\n7. Opening Grafana at {GRAFANA_URL}...")
+    logging.info(f"\n7. Opening Grafana at {GRAFANA_URL}...")
     webbrowser.open(GRAFANA_URL)
 
     # Keep the orchestrator running to prevent closing
-    print("\n" + "=" * 60)
-    print("VIGILIX PIPELINE STARTED SUCCESSFULLY!")
-    print("=" * 60)
-    print("\nComponents running:")
-    print("- Kafka & Zookeeper: scripts/start-kafka.bat window")
-    print("- Prometheus: scripts/start-prometheus.bat window")
-    print("- Producer: streaming/synthetic-producer.py window")
-    print("- Consumer: streaming/kafka_consumer.py window")
-    print(f"- Grafana Dashboard: {GRAFANA_URL}")
+    logging.info("\n" + "=" * 60)
+    logging.info("VIGILIX PIPELINE STARTED SUCCESSFULLY!")
+    logging.info("=" * 60)
+    logging.info("\nComponents running:")
+    logging.info("- Kafka & Zookeeper: scripts/start-kafka.bat window")
+    logging.info("- Prometheus: scripts/start-prometheus.bat window")
+    logging.info("- Producer: streaming/synthetic-producer.py window")
+    logging.info("- Consumer: streaming/kafka_consumer.py window")
+    logging.info(f"- Grafana Dashboard: {GRAFANA_URL}")
     
-    print("\nPress Ctrl+C to stop all components and exit")
-    print("-" * 40)
+    logging.info("\nPress Ctrl+C to stop all components and exit")
+    logging.info("-" * 40)
     
     try:
         while True:
             time.sleep(2)
     except KeyboardInterrupt:
-        print("\nExiting orchestrator. Stopping components...")
+        logging.info("\nExiting orchestrator. Stopping components...")
         stop_all()
 
 def stop_all():
     """
     Attempts to gracefully stop all components
     """
-    print("\nStopping all Vigilix components...")
+    logging.info("\nStopping all Vigilix components...")
     
     try:
         # This is a basic approach - you might want to implement more sophisticated
@@ -182,9 +191,9 @@ def stop_all():
         subprocess.run(["taskkill", "/f", "/im", "python.exe"], capture_output=True)
         subprocess.run(["taskkill", "/f", "/im", "cmd.exe"], capture_output=True)
     except Exception as e:
-        print(f"Error stopping processes: {e}")
+        logging.error(f"Error stopping processes: {e}")
     
-    print("All components stopped. Goodbye!")
+    logging.info("All components stopped. Goodbye!")
 
 if __name__ == "__main__":
     main()
