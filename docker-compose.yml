@@ -1,0 +1,94 @@
+services:
+  vigilix-zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    container_name: vigilix-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - vigilix-net
+
+  vigilix-kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    container_name: vigilix-kafka
+    depends_on:
+      vigilix-zookeeper:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: vigilix-zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://vigilix-kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    healthcheck:
+      test: ["CMD", "kafka-topics.sh", "--list", "--bootstrap-server", "vigilix-kafka:9092"]
+      interval: 20s
+      timeout: 15s
+      retries: 25
+      start_period: 120s
+    networks:
+      - vigilix-net
+
+  vigilix-prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: vigilix-prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9000:9090"
+    networks:
+      - vigilix-net
+
+  vigilix-grafana:
+    image: grafana/grafana:10.2.2
+    container_name: vigilix-grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - vigilix-net
+
+  vigilix-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vigilix-app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - vigilix-kafka
+    networks:
+      - vigilix-net
+
+  vigilix-kafka-producer:
+    build:
+      context: .
+      dockerfile: Dockerfile.producer
+    container_name: vigilix-kafka-producer
+    depends_on:
+      vigilix-kafka:
+        condition: service_healthy
+    networks:
+      - vigilix-net
+
+  vigilix-kafka-consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile.consumer
+    container_name: vigilix-kafka-consumer
+    depends_on:
+      vigilix-kafka:
+        condition: service_healthy
+    networks:
+      - vigilix-net
+
+networks:
+  vigilix-net:
+    driver: bridge
