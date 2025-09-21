@@ -63,7 +63,7 @@ atharsayed-vigilix/
 │   ├── start-kafka.bat            # Script to launch Zookeeper, Kafka broker, and topics
 │   └── start-prometheus.bat       # Script to start Prometheus monitoring service
 ├── src/                           # Core data processing logic and helper utilities
-│   ├── main.py                    # MAIN ORCHESTRATOR - moved here from root
+│   ├── main.py                    # MAIN ORCHESTRATOR 
 │   ├── eda.py                     # Script to perform Exploratory Data Analysis
 │   ├── preprocess.py              # Data cleaning and transformation logic
 │   └── utils.py                   # Common helper functions used across modules
