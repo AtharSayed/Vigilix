@@ -35,7 +35,6 @@ Welcome to **Vigilix**, an intelligent anomaly detection pipeline built using cl
 atharsayed-vigilix/
 ├── README.md                      # Project overview, setup instructions, and usage guide
 ├── requirements.txt              # Python dependencies for the project
-├── main.py                        # MAIN ORCHESTRATOR - moved from root to src/
 ├── models/                        # Model training, tuning, and inference scripts
 │   ├── app.py                     # Main entry point to run and evaluate models
 │   ├── hyper-xgb.py               # Hyperparameter tuning for XGBoost
