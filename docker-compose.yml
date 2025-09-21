@@ -75,6 +75,7 @@ services:
     depends_on:
       vigilix-kafka:
         condition: service_healthy
+    command: python streaming/producer.py  # Adjust to your producer script
     networks:
       - vigilix-net
 
