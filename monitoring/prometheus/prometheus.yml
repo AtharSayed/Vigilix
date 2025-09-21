@@ -1,11 +1,37 @@
+# For running prometheus Locally:(Without Docker)
+
+# global:
+#   scrape_interval: 5s
+
+# scrape_configs:
+#   - job_name: "vigilix-kafka"
+#     static_configs:
+#       - targets: ["localhost:8001"]
+
+#   - job_name: "prometheus"
+#     static_configs:
+#       - targets: ["localhost:9090"]
+
+
+# For running prometheus on docker setup :
+
 global:
   scrape_interval: 5s
 
 scrape_configs:
-  - job_name: "vigilix-kafka"
-    static_configs:
-      - targets: ["localhost:8001"]
-
   - job_name: "prometheus"
     static_configs:
-      - targets: ["localhost:9090"]
+      - targets: ["vigilix-prometheus:9090"]  # Internal Docker network name and port
+
+  - job_name: "vigilix-app"
+    static_configs:
+      - targets: ["vigilix-app:5000"]  # Flask app metrics endpoint
+
+  - job_name: "vigilix-kafka-consumer"
+    static_configs:
+      - targets: ["vigilix-kafka-consumer:8001"]  # Consumer metrics port (verify this)
+
+  # Remove or adjust Kafka job unless JMX is enabled
+  # - job_name: "vigilix-kafka"
+  #   static_configs:
+  #     - targets: ["vigilix-kafka:9092"]  # Only if JMX is configured
