@@ -8,13 +8,13 @@ Welcome to **Vigilix**, an intelligent anomaly detection pipeline built using cl
 
 **Vigilix** leverages multiple anomaly detection models (Isolation Forest, Random Forest, XGBoost) to identify irregular patterns in data. It includes:
 
-- 📊 Exploratory Data Analysis (EDA)
-- 🧹 Preprocessing utilities
-- ⚙️ Model training and evaluation
-- 🧪 Unit testing for critical components
-- 📈 Real-time Monitoring using Grafana and Prometheus.
-- 🔄 CI/CD compatibility for automation
-- 🛠️ Real-time Data Integration by collecting system performance metrics and using that data in customizable dashboards.
+-  Exploratory Data Analysis (EDA)
+-  Preprocessing utilities
+-  Model training and evaluation
+-  Unit testing for critical components
+-  Real-time Monitoring using Grafana and Prometheus.
+-  CI/CD compatibility for automation
+-  Real-time Data Integration by collecting system performance metrics and using that data in customizable dashboards.
 
 ---
 
