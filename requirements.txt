@@ -9,4 +9,4 @@ flask
 prometheus-client
 gunicorn
 kafka-python  
-requests      
+requests
