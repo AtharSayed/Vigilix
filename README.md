@@ -48,27 +48,46 @@ The dashboard provides real-time insights, including:
 ## 🧭 Project Structure
 
 ```bash
-Vigilix/
-├── README.md                      # Project overview and usage guide
-├── requirements.txt               # Python dependencies
-├── docker-compose.yml             # Docker Compose file for service orchestration
+atharsayed-vigilix/
+├── README.md                      # Project overview, setup instructions, and usage guide
+├── requirements.txt              # Python dependencies for the project
 ├── models/                        # Model training, tuning, and inference scripts
-│   ├── app.py                     # Main entry point for model evaluation
-│   ├── isolation-forest.py        # Isolation Forest implementation
-│   ├── random-forest.py           # Random Forest implementation
-│   ├── xgboost_model.py           # XGBoost implementation
-│   └── saved_models/              # Pre-trained models
-├── monitoring/                    # Monitoring stack configuration
-│   ├── grafana/                   # Grafana setup
-│   └── prometheus/                # Prometheus setup
-├── results/                       # EDA summaries and model evaluation results
-├── scripts/                       # Scripts to start Kafka and Prometheus
-├── src/                           # Core data processing and orchestration logic
-│   ├── main.py                    # Main orchestrator script
-│   ├── preprocess.py              # Data preprocessing logic
-│   └── utils.py                   # Helper functions
-├── streaming/                     # Kafka producer and consumer scripts
+│   ├── app.py                     # Main entry point to run and evaluate models
+│   ├── hyper-xgb.py               # Hyperparameter tuning for XGBoost
+│   ├── isolation-forest.py        # Isolation Forest anomaly detection implementation
+│   ├── random-forest.py           # Random Forest classification model
+│   └── xgboost_model.py           # XGBoost classification model
+├── monitoring/                    # Monitoring stack configuration for model/data pipeline
+│   ├── grafana/                   # Grafana setup for data visualization
+│   │   ├── datasource.yaml        # Grafana data source configuration (e.g., Prometheus)
+│   │   └── vigilix_dashboard.json # Predefined dashboard for model and system metrics
+│   └── prometheus/                # Prometheus setup for metrics scraping
+│       └── prometheus.yml         # Configuration file for Prometheus scrape jobs
+├── results/                       # Output directory for EDA summaries and model evaluations
+│   ├── eda/                       # EDA result storage
+│   │   └── eda_summary.txt        # Summary of statistical and visual data insights
+│   └── images/                    # Directory for storing system architecture and dashboard images
+│   │   ├── Sample-Dashboard-Screenshot.png  # Dashboard screenshot
+│   │   └── System-Design.png                # System architecture diagram
+│   └── models/                    # Model evaluation metrics and performance logs
+│       ├── isolationforest_results.txt   # Evaluation results for Isolation Forest
+│       ├── RandomForest_results.txt      # Evaluation results for Random Forest
+│       ├── XGBoost_results.txt           # Evaluation results for XGBoost
+│       └── XGBoost_Tuned_results.txt     # Evaluation results after XGBoost tuning
+├── scripts/                       # Scripts to automate environment or service startup
+│   ├── start-kafka.bat            # Script to launch Zookeeper, Kafka broker, and topics
+│   └── start-prometheus.bat       # Script to start Prometheus monitoring service
+├── src/                           # Core data processing logic and helper utilities
+│   ├── main.py                    # MAIN ORCHESTRATOR 
+│   ├── eda.py                     # Script to perform Exploratory Data Analysis
+│   ├── preprocess.py              # Data cleaning and transformation logic
+│   └── utils.py                   # Common helper functions used across modules
+├── streaming/                     # Kafka-based streaming components
+│   ├── kafka_consumer.py          # Kafka consumer to receive and process streaming data
+│   ├── kafka_producer.py          # Kafka producer to send data to topics
+│   └── synthetic-producer.py      # Kafka producer for synthetic data generation
 └── testing/                       # Unit and integration tests
+    └── test_app.py                # Tests for model pipeline and app logic
 ```
 
 ---
@@ -138,16 +157,10 @@ Vigilix/
 ## 🧪 Testing
 
 ### Unit Tests
-Run unit tests to ensure the integrity of the pipeline:
+Run test_app.py to see the results of the prediction There are 2 attack and 2 non attack payloads hardcoded in the fiile that will be send to the model and in return the model will predict whether its an attack or not .
 ```bash
 pytest testing/
 ```
-
-### Test Coverage
-- **Model Pipeline:** Tests for data preprocessing, model inference, and evaluation.
-- **Streaming Components:** Tests for Kafka producer and consumer.
-
----
 
 ## 📈 Future Enhancements
 
@@ -174,14 +187,6 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📞 Support
-
-For any questions or issues, please contact:
-- **Name:** Your Name
-- **Email:** your.email@example.com
-- **GitHub:** [your-username](https://github.com/your-username)
-
----
 
 ## 🌟 Acknowledgments
 
