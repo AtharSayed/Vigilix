@@ -61,9 +61,6 @@ def start_bat(path: Path, title: str):
         sys.exit(1)
 
 def start_py(path: Path, title: str, args=None):
-    """
-    Starts a Python script in a new terminal window.
-    """
     if not path.exists():
         logging.error(f"Error: Missing {path}")
         logging.error(f"Please ensure the file exists at: {path.absolute()}")
@@ -87,7 +84,7 @@ def check_prerequisites():
     """
     logging.info("Checking prerequisites...")
     
-    # Check if Python is available
+    # Checking if Python is available
     try:
         subprocess.run([sys.executable, "--version"], capture_output=True, check=True)
     except:
@@ -184,8 +181,6 @@ def stop_all():
     logging.info("\nStopping all Vigilix components...")
     
     try:
-        # This is a basic approach - you might want to implement more sophisticated
-        # process management if needed
         subprocess.run(["taskkill", "/f", "/im", "java.exe"], capture_output=True)
         subprocess.run(["taskkill", "/f", "/im", "prometheus.exe"], capture_output=True)
         subprocess.run(["taskkill", "/f", "/im", "python.exe"], capture_output=True)
