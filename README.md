@@ -102,7 +102,7 @@ atharsayed-vigilix/
 ### Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/vigilix.git
+   git clone https://github.com/AtharSayed/vigilix.git
    cd vigilix
    ```
 
