@@ -1,5 +1,6 @@
 /data/raw
 /data/processed
+/data/ssh-logs
 models/saved_models/
 # Ignore all __pycache__ folders recursively
 __pycache__/
