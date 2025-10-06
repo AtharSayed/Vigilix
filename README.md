@@ -50,7 +50,9 @@ The dashboard provides real-time insights, including:
 ```bash
 atharsayed-vigilix/
 ├── README.md                      # Project overview, setup instructions, and usage guide
-├── requirements.txt              # Python dependencies for the project
+├── requirements.txt               # Python dependencies for the project
+├── dockerfile                     # Build files for application
+├── docker-compose.yml             # Contains the individual containers for various services 
 ├── models/                        # Model training, tuning, and inference scripts
 │   ├── app.py                     # Main entry point to run and evaluate models
 │   ├── hyper-xgb.py               # Hyperparameter tuning for XGBoost
