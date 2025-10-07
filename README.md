@@ -52,7 +52,11 @@ atharsayed-vigilix/
 ├── README.md                      # Project overview, setup instructions, and usage guide
 ├── requirements.txt               # Python dependencies for the project
 ├── dockerfile                     # Build files for application
-├── docker-compose.yml             # Contains the individual containers for various services 
+├── .gitignore                     # Heavy datasets and build cache excluded in commits 
+├── docker-compose.yml             # Contains the individual containers for various services
+├── data/                          # Currently in (.gitignore)
+│   ├── processed                  # Splitted the data seperate for training and testing (availabe in parquet format)
+│   ├── raw 
 ├── models/                        # Model training, tuning, and inference scripts
 │   ├── app.py                     # Main entry point to run and evaluate models
 │   ├── hyper-xgb.py               # Hyperparameter tuning for XGBoost
@@ -163,14 +167,6 @@ Run test_app.py to see the results of the prediction There are 2 attack and 2 no
 ```bash
 pytest testing/
 ```
-
-## 📈 Future Enhancements
-
-- **Model Registry:** Implement a model registry (e.g., MLflow) to track model versions and metrics.
-- **Data Validation:** Add schema validation for incoming data.
-- **Scalability:** Deploy the pipeline on Kubernetes for horizontal scaling.
-- **Advanced Models:** Integrate deep learning models for anomaly detection.
-- **Security:** Add authentication and authorization for APIs and dashboards.
 
 ---
 
