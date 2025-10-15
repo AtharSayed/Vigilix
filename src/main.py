@@ -26,7 +26,7 @@ CONSUMER = PROJECT_ROOT / "streaming" / "kafka_consumer.py"
 
 BROKER_HOST, BROKER_PORT = "localhost", 9092
 PROM_HOST, PROM_PORT = "localhost", 9090
-GRAFANA_URL = "http://localhost:3000"
+GRAFANA_URL = "http://localhost:3000/d/0b1ea385-cc05-4c5c-98a2-0bb6e170b35b/nids-dashboard-vigilix-kafka-monitoring?orgId=1&from=now-5m&to=now&timezone=browser&refresh=10s"
 
 def wait_for_port(host, port, timeout=90):
     """
