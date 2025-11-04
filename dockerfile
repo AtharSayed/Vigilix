@@ -1,30 +1,24 @@
-# Use Python 3.10 slim base image
-FROM python:3.10-slim
+FROM python:3.11-slim
 
-# Set working directory
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy requirements file (assuming you have one, or install dependencies directly)
-COPY requirements.txt .
-
-# Install Python dependencies
+# Python deps
+COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project files
-COPY . .
+# Project
+COPY . /app
 
-# Expose Flask port
-EXPOSE 5000
+# Defaults for in-container networking (overridable via compose)
+ENV KAFKA_BOOTSTRAP_SERVERS=kafka:9092 \
+    WAIT_FOR_KAFKA_TIMEOUT_SEC=120 \
+    WAIT_FOR_KAFKA_INTERVAL_SEC=2 \
+    METRICS_PORT=8001
 
-# Set environment variables
-ENV FLASK_APP=models/app.py
-ENV FLASK_ENV=production
+EXPOSE 8001
 
-# Command to run the Flask app
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+# Use shell-form to avoid the "[python, not found]" issue
+CMD python src/main.py

@@ -1,0 +1,14 @@
+# For running Prometheus inside Docker Compose
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  # Prometheus self-scrape (service name inside the compose network)
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["prometheus:9090"]
+
+  # Your app container exposes the consumer metrics on 8001
+  - job_name: "vigilix-kafka-consumer"
+    static_configs:
+      - targets: ["app:8001"]
