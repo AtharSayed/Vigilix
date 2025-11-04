@@ -1,16 +1,15 @@
-import json
-import time
-import random
+import os, json, time, random
 from kafka import KafkaProducer
 
-# Initializing the  Kafka Producer
+TOPIC = os.getenv("KAFKA_TOPIC", "vigilix-stream")
+BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
+
 producer = KafkaProducer(
-    bootstrap_servers="localhost:9092",
-    value_serializer=lambda v: json.dumps(v).encode("utf-8")
+    bootstrap_servers=BOOTSTRAP,
+    value_serializer=lambda v: json.dumps(v).encode("utf-8"),
 )
 
-# A base template for a normal network log record. We will randomize some of these fields to create variety.
-BASE_RECORD = {
+BASE = {
     'dur': 0.000011, 'proto': 'udp', 'service': '-', 'state': 'INT', 'spkts': 2,
     'dpkts': 0, 'sbytes': 104, 'dbytes': 0, 'rate': 90909.0902, 'sttl': 254,
     'dttl': 0, 'sload': 37818181.82, 'dload': 0.0, 'sloss': 0, 'dloss': 0,
@@ -23,50 +22,35 @@ BASE_RECORD = {
     'ct_flw_http_mthd': 0, 'ct_src_ltm': 1, 'ct_srv_dst': 2, 'is_sm_ips_ports': 0
 }
 
-def generate_synthetic_record():
-    record = BASE_RECORD.copy()
-
-    # --- Introducing  random variations to simulate real traffic ---
-
-    # Vary some numerical features
-    record['dur'] = max(0, record['dur'] + random.uniform(-0.000005, 0.000005))
-    record['sbytes'] = record['sbytes'] + random.randint(-20, 20)
-    record['rate'] = max(0, record['rate'] + random.uniform(-10000, 10000))
-    record['sload'] = max(0, record['sload'] + random.uniform(-1000000, 1000000))
-    record['smean'] = max(0, record['smean'] + random.randint(-10, 10))
-
-    # Occasionally, create a potential anomaly with high packet counts
-    if random.random() < 0.1: # 10% chance of being an "attack" type
-        record['proto'] = 'tcp'
-        record['spkts'] = random.randint(50, 200)
-        record['sbytes'] = random.randint(10000, 50000)
-        record['rate'] = random.uniform(500, 2500)
-        record['service'] = 'dns'
-    else: # 90% chance of being a "normal" type
-        record['proto'] = random.choice(['udp', 'tcp', 'arp'])
-        record['service'] = random.choice(['-', 'dns', 'http'])
-
-    return record
+def make_record():
+    r = dict(BASE)
+    r['dur'] = max(0, r['dur'] + random.uniform(-0.000005, 0.000005))
+    r['sbytes'] = r['sbytes'] + random.randint(-20, 20)
+    r['rate'] = max(0, r['rate'] + random.uniform(-10000, 10000))
+    r['sload'] = max(0, r['sload'] + random.uniform(-1_000_000, 1_000_000))
+    r['smean'] = max(0, r['smean'] + random.randint(-10, 10))
+    if random.random() < 0.1:
+        r['proto'] = 'tcp'
+        r['spkts'] = random.randint(50, 200)
+        r['sbytes'] = random.randint(10_000, 50_000)
+        r['rate'] = random.uniform(500, 2500)
+        r['service'] = 'dns'
+    else:
+        r['proto'] = random.choice(['udp', 'tcp', 'arp'])
+        r['service'] = random.choice(['-', 'dns', 'http'])
+    return r
 
 def main():
-    """Main function to generate and send data continuously."""
-    print("🚀 Starting synthetic data producer...")
+    print(f"[producer] topic={TOPIC} bootstrap={BOOTSTRAP}")
+    sleep_s = float(os.getenv("PRODUCER_SLEEP_SEC", "1"))
     try:
         while True:
-            # 1. Generate a new synthetic record
-            record = generate_synthetic_record()
-
-            # 2. Send it to the Kafka topic
-            producer.send("vigilix-stream", record)
-            producer.flush() # Ensure message is sent immediately
-
-            print(f"📤 Sent record with proto={record['proto']} and spkts={record['spkts']}")
-
-            # 3. Wait for a short period to simulate a real-time stream
-            time.sleep(1) # Send one record per second
-
+            rec = make_record()
+            producer.send(TOPIC, rec)
+            producer.flush()
+            time.sleep(sleep_s)
     except KeyboardInterrupt:
-        print("\n🛑 Producer stopped.")
+        print("producer stopped")
 
 if __name__ == "__main__":
     main()
