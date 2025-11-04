@@ -1,95 +1,114 @@
+name: vigilix
+
 services:
-  vigilix-zookeeper:
-    image: confluentinc/cp-zookeeper:7.3.0
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
     container_name: vigilix-zookeeper
+    restart: unless-stopped
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    volumes:
+      - zk-data:/var/lib/zookeeper/data
+      - zk-log:/var/lib/zookeeper/log
     healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "2181"]
+      test: ["CMD", "bash", "-lc", "zookeeper-shell localhost:2181 ls / >/dev/null 2>&1"]
       interval: 10s
       timeout: 5s
-      retries: 10
-    networks:
-      - vigilix-net
+      retries: 20
 
-  vigilix-kafka:
-    image: confluentinc/cp-kafka:7.3.0
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
     container_name: vigilix-kafka
+    restart: unless-stopped
     depends_on:
-      vigilix-zookeeper:
+      zookeeper:
         condition: service_healthy
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: vigilix-zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://vigilix-kafka:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      # listeners: internal (kafka:9092) + host (localhost:9094)
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://:9092,PLAINTEXT_HOST://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:9094
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+
+      # single-broker friendly defaults
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    ports:
-      - "9092:9092"
-    healthcheck:
-      test: ["CMD", "/usr/bin/kafka-topics", "--list", "--bootstrap-server", "localhost:9092"]
-      interval: 20s
-      timeout: 15s
-      retries: 50
-      start_period: 300s
-    networks:
-      - vigilix-net
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
 
-  vigilix-prometheus:
-    image: prom/prometheus:v2.45.0
-    container_name: vigilix-prometheus
+      KAFKA_HEAP_OPTS: "-Xms512m -Xmx1g"
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+    ports:
+      - "9094:9094"             # host access to broker
     volumes:
-      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9000:9090"
-    networks:
-      - vigilix-net
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "bash", "-lc", "kafka-topics --bootstrap-server localhost:9092 --list >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
 
-  vigilix-grafana:
-    image: grafana/grafana:10.2.2
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: vigilix-prometheus
+    restart: unless-stopped
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=15d"
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.docker.yml:/etc/prometheus/prometheus.yml:ro
+      - prom-data:/prometheus
+
+  grafana:
+    image: grafana/grafana:latest
     container_name: vigilix-grafana
+    restart: unless-stopped
     ports:
       - "3000:3000"
-    networks:
-      - vigilix-net
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_DEFAULT_APP_MODE: production
+    volumes:
+      - grafana-data:/var/lib/grafana
+      # Provisioned Prometheus datasource + dashboard
+      - ./monitoring/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+      - ./monitoring/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:ro
+      - ./monitoring/grafana/vigilix_dashboard.json:/etc/grafana/provisioning/dashboards/vigilix_dashboard.json:ro
 
-  vigilix-app:
+  app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile   # explicitly use your lowercase filename
     container_name: vigilix-app
-    ports:
-      - "5000:5000"
+    restart: unless-stopped
     depends_on:
-      - vigilix-kafka
-    networks:
-      - vigilix-net
-
-  vigilix-kafka-producer:
-    build:
-      context: .
-      dockerfile: Dockerfile.producer
-    container_name: vigilix-kafka-producer
-    depends_on:
-      vigilix-kafka:
+      kafka:
         condition: service_healthy
-    command: python streaming/producer.py  # Adjust to your producer script
-    networks:
-      - vigilix-net
+      prometheus:
+        condition: service_started
+      grafana:
+        condition: service_started
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      WAIT_FOR_KAFKA_TIMEOUT_SEC: "120"
+      WAIT_FOR_KAFKA_INTERVAL_SEC: "2"
+      METRICS_PORT: "8001"
+    # If you want to hit metrics from the host browser directly:
+    # ports:
+    #   - "8001:8001"
 
-  vigilix-kafka-consumer:
-    build:
-      context: .
-      dockerfile: Dockerfile.consumer
-    container_name: vigilix-kafka-consumer
-    depends_on:
-      vigilix-kafka:
-        condition: service_healthy
-    networks:
-      - vigilix-net
-
-networks:
-  vigilix-net:
-    driver: bridge
+volumes:
+  zk-data:
+  zk-log:
+  kafka-data:
+  prom-data:
+  grafana-data:
