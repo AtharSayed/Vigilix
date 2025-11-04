@@ -49,51 +49,67 @@ The dashboard provides real-time insights, including:
 
 ```bash
 atharsayed-vigilix/
-├── README.md                      # Project overview, setup instructions, and usage guide
-├── requirements.txt               # Python dependencies for the project
-├── dockerfile                     # Build files for application
-├── .gitignore                     # Heavy datasets and build cache excluded in commits 
-├── docker-compose.yml             # Contains the individual containers for various services
-├── data/                          # Currently in (.gitignore)
-│   ├── processed                  # Splitted the data seperate for training and testing (availabe in parquet format)
-│   ├── raw 
-├── models/                        # Model training, tuning, and inference scripts
-│   ├── app.py                     # Main entry point to run and evaluate models
-│   ├── hyper-xgb.py               # Hyperparameter tuning for XGBoost
-│   ├── isolation-forest.py        # Isolation Forest anomaly detection implementation
-│   ├── random-forest.py           # Random Forest classification model
-│   └── xgboost_model.py           # XGBoost classification model
-├── monitoring/                    # Monitoring stack configuration for model/data pipeline
-│   ├── grafana/                   # Grafana setup for data visualization
-│   │   ├── datasource.yaml        # Grafana data source configuration (e.g., Prometheus)
-│   │   └── vigilix_dashboard.json # Predefined dashboard for model and system metrics
-│   └── prometheus/                # Prometheus setup for metrics scraping
-│       └── prometheus.yml         # Configuration file for Prometheus scrape jobs
-├── results/                       # Output directory for EDA summaries and model evaluations
-│   ├── eda/                       # EDA result storage
-│   │   └── eda_summary.txt        # Summary of statistical and visual data insights
-│   └── images/                    # Directory for storing system architecture and dashboard images
-│   │   ├── Sample-Dashboard-Screenshot.png  # Dashboard screenshot
-│   │   └── System-Design.png                # System architecture diagram
-│   └── models/                    # Model evaluation metrics and performance logs
-│       ├── isolationforest_results.txt   # Evaluation results for Isolation Forest
-│       ├── RandomForest_results.txt      # Evaluation results for Random Forest
-│       ├── XGBoost_results.txt           # Evaluation results for XGBoost
-│       └── XGBoost_Tuned_results.txt     # Evaluation results after XGBoost tuning
-├── scripts/                       # Scripts to automate environment or service startup
-│   ├── start-kafka.bat            # Script to launch Zookeeper, Kafka broker, and topics
-│   └── start-prometheus.bat       # Script to start Prometheus monitoring service
-├── src/                           # Core data processing logic and helper utilities
-│   ├── main.py                    # MAIN ORCHESTRATOR 
-│   ├── eda.py                     # Script to perform Exploratory Data Analysis
-│   ├── preprocess.py              # Data cleaning and transformation logic
-│   └── utils.py                   # Common helper functions used across modules
-├── streaming/                     # Kafka-based streaming components
-│   ├── kafka_consumer.py          # Kafka consumer to receive and process streaming data
-│   ├── kafka_producer.py          # Kafka producer to send data to topics
-│   └── synthetic-producer.py      # Kafka producer for synthetic data generation
-└── testing/                       # Unit and integration tests
-    └── test_app.py                # Tests for model pipeline and app logic
+├── README.md                           # Project overview, setup guide, and usage documentation
+├── requirements.txt                    # Python dependencies for model, Kafka, and monitoring
+├── dockerfile                          # Docker build file for the Vigilix app service
+├── docker-compose.yml                  # Multi-service orchestration (App, Kafka, Zookeeper, Prometheus, Grafana)
+├── .gitignore                          # Excludes large datasets, build cache, logs, and system files
+│
+├── data/                               # (gitignored) Raw and processed datasets
+│   ├── raw/                            # Raw unprocessed data files (CSV, JSON, etc.)
+│   └── processed/                      # Cleaned and split datasets for model training/testing (.parquet)
+│
+├── models/                             # ML model training, tuning, and inference scripts
+│   ├── app.py                          # Model evaluation entry point (train/test and log metrics)
+│   ├── hyper_xgb.py                    # Hyperparameter tuning script for XGBoost
+│   ├── isolation_forest.py             # Isolation Forest-based anomaly detection
+│   ├── random_forest.py                # Random Forest classification implementation
+│   └── xgboost_model.py                # XGBoost model for classification/anomaly detection
+│
+├── monitoring/                         # Monitoring and observability setup for Vigilix
+│   ├── grafana/                        # Grafana dashboards and provisioning
+│   │   ├── datasource.yaml             # Pre-configured Prometheus datasource for Grafana
+│   │   ├── dashboards.yaml             # Dashboard auto-provisioning configuration
+│   │   └── vigilix_dashboard.json      # Custom Vigilix dashboard for live metrics visualization
+│   │
+│   ├── prometheus/                     # Prometheus-specific configurations
+│   │   └── prometheus.yml              # Local Prometheus config for manual runs
+│   │
+│   └── prometheus.docker.yml           # Prometheus config for Docker environment (targets internal container names)
+│
+├── results/                            # Logs, visual outputs, and model performance reports
+│   ├── eda/                            # EDA (Exploratory Data Analysis) summaries
+│   │   └── eda_summary.txt             # Descriptive statistics and data insights summary
+│   │
+│   ├── images/                         # Visual documentation (architecture diagrams, dashboards)
+│   │   ├── Sample-Dashboard-Screenshot.png  # Snapshot of Grafana dashboard
+│   │   └── System-Design.png                # End-to-end Vigilix system architecture
+│   │
+│   └── models/                         # Model evaluation logs and result files
+│       ├── isolationforest_results.txt      # Isolation Forest results
+│       ├── RandomForest_results.txt         # Random Forest results
+│       ├── XGBoost_results.txt              # XGBoost baseline results
+│       └── XGBoost_Tuned_results.txt        # XGBoost hyperparameter tuning results
+│
+├── scripts/                            # Automation and helper scripts for local environment setup
+│   ├── start-kafka.bat                 # Windows script to start Zookeeper & Kafka manually
+│   ├── start-prometheus.bat            # Windows script to start Prometheus manually
+│   └── cleanup.bat                     # (optional) Script to remove local Docker containers and volumes
+│
+├── src/                                # Core application logic and orchestration layer
+│   ├── main.py                         # 🔥 Main orchestrator — runs producer, consumer, model inference, and metrics
+│   ├── eda.py                          # Performs exploratory data analysis on raw/processed data
+│   ├── preprocess.py                   # Cleans, normalizes, and encodes raw data before training
+│   └── utils.py                        # Shared helper functions (logging, Kafka utilities, config parsing)
+│
+├── streaming/                          # Kafka real-time data streaming modules
+│   ├── kafka_producer.py               # Producer that sends live data into Kafka topics
+│   ├── kafka_consumer.py               # Consumer that processes and scores streaming data
+│   └── synthetic_producer.py           # Synthetic data generator for simulating real-time streams
+│
+└── testing/                            # Unit and integration tests for model and pipeline
+   └── test_app.py                     # Tests model inference and main orchestration logic
+
 ```
 
 ---
@@ -112,22 +128,30 @@ atharsayed-vigilix/
    cd vigilix
    ```
 
-2. Install Python dependencies:
+2. Build the Docker Image
    ```bash
-   pip install -r requirements.txt
+   docker compose build --no-cache app
    ```
 
-3. Start the services using Docker Compose:
+3. Start the Entire Stack:
    ```bash
-   docker-compose up
+   docker compose up -d
    ```
 
-4. Start the orchestrator:
+4. Verify Containers
    ```bash
-   python src/main.py
+   docker ps
    ```
-
+- This launches all the services in the container.
 ---
+
+| Service        | URL                                            | Description                                            |
+| -----------    | ---------------------------------------------- | ------------------------------------------------------ |
+| **Grafana**    | [http://localhost:3000](http://localhost:3000) | Visualization Dashboard (user: `admin`, pass: `admin`) |
+| **Prometheus** | [http://localhost:9090](http://localhost:9090) | Metrics and targets                                    |
+| **Kafka**      | `localhost:9094`                               | Kafka broker (accessible via internal `kafka:9092`)    |
+
+
 
 ## 🛠️ Components
 
