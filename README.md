@@ -93,8 +93,7 @@ atharsayed-vigilix/
 │
 ├── scripts/                            # Automation and helper scripts for local environment setup
 │   ├── start-kafka.bat                 # Windows script to start Zookeeper & Kafka manually
-│   ├── start-prometheus.bat            # Windows script to start Prometheus manually
-│   └── cleanup.bat                     # (optional) Script to remove local Docker containers and volumes
+│   └── start-prometheus.bat            # Windows script to start Prometheus manually   
 │
 ├── src/                                # Core application logic and orchestration layer
 │   ├── main.py                         # 🔥 Main orchestrator — runs producer, consumer, model inference, and metrics
