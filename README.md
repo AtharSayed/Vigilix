@@ -193,6 +193,52 @@ pytest testing/
 
 ---
 
+---
+# 📘 Dataset Overview — UNSW-NB15 (Network Intrusion Detection)
+
+The **UNSW-NB15** dataset is the primary dataset used for building and evaluating the Vigilix intrusion detection models.  
+It contains modern, realistic network traffic with a wide variety of normal and malicious activities, making it highly suitable for machine learning–based cybersecurity pipelines.
+
+## 🔍 Dataset Composition
+
+The dataset consists of millions of network flow records that are labeled as either:
+- **Normal** — legitimate, benign traffic  
+- **Attack** — belonging to one of several cyberattack categories including:  
+  DoS, Exploits, Backdoor, Reconnaissance, Fuzzers, Generic, Shellcode, Analysis, Worms, Brute Force, etc.
+
+This supports:
+- **Binary anomaly detection** (Normal vs Anomaly)  
+- **Multi-class attack classification** for fine‑grained detection  
+
+---
+
+## 🧩 Feature Descriptions
+
+Below is a detailed overview of some important features from the UNSW-NB15 dataset:
+
+- **duration**: Duration of the network flow (seconds)  
+- **protocol_type**: Protocol used (TCP, UDP, ICMP)  
+- **service**: Application service (HTTP, DNS, FTP, etc.)  
+- **src_bytes / dst_bytes**: Bytes sent from source/destination  
+- **flag**: Connection status (SF, REJ, etc.)  
+- **land**: Whether source & destination IP/port are identical  
+- **wrong_fragment / urgent**: Fragmentation and urgent packet indicators  
+- **hot**: Frequency-based feature showing suspicious “hotness”  
+- **failed_logins / logged_in**: Login activity features  
+- **lnum_compromised / root_shell / su_attempted**: Compromise indicators  
+- **num_file_creations / num_shells / num_access_files**: Suspicious file/shell access  
+- **num_outbound_cmds**: Outbound command count  
+- **is_hot_login / is_guest_login**: Login type metadata  
+- **count / srv_count**: Traffic toward same host/service  
+- **serror_rate / srv_serror_rate**: Connection error rates  
+- **same_srv_rate / diff_srv_rate**: Service distribution metrics  
+- **dst_host_count / dst_host_srv_count**: Target host statistics  
+- **dst_host_same_srv_rate / diff_srv_rate / same_src_port_rate**: Host‑level service patterns  
+- **rerror_rate, srv_rerror_rate, dst_host_rerror_rate**: Error-based indicators  
+
+---
+
+
 ## 🛡️ License
 
 This project is licensed under the [MIT License](LICENSE).
